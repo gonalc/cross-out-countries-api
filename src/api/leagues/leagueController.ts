@@ -1,5 +1,5 @@
 import GenericController from '../GenericController'
-import VenueService from './venueService'
+import VenueService from './leagueService'
 
 const service = new VenueService()
 

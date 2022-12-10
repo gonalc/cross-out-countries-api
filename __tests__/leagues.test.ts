@@ -3,25 +3,25 @@ import app from '../src/app'
 import { StatusCodes } from 'http-status-codes'
 import { Attributes, CreationAttributes, ModelStatic } from 'sequelize'
 import db from '../src/db'
-import VenueModel from '../src/api/venues/venueModel'
+import LeagueModel from '../src/api/leagues/leagueModel'
 
-const NAME = 'Venue'
-const BASE_URL = '/api/venues'
+const NAME = 'League'
+const BASE_URL = '/api/leagues'
 
 const includedFields = 'user'
 
-const newItem: CreationAttributes<VenueModel> = {
-  name: 'TEST__Venue',
+const newItem: CreationAttributes<LeagueModel> = {
+  name: 'TEST__League',
   defaultTax: 14,
 }
 
 const UPDATED_FIELD = 'name'
-const UPDATED_VALUE = 'TEST__Venue__edited'
+const UPDATED_VALUE = 'TEST__League__edited'
 
 const PAGINATION_OFFSET = 0
 const PAGINATION_LIMIT = 3
 
-describe('Venues API endpoints', () => {
+describe('Leagues API endpoints', () => {
   let createdId: number
 
   beforeAll(async () => {
@@ -48,7 +48,7 @@ describe('Venues API endpoints', () => {
     expect(statusCode).toBe(StatusCodes.OK)
     expect(body.data).toBeDefined()
 
-    body.data.forEach((item: ModelStatic<VenueModel>) => {
+    body.data.forEach((item: ModelStatic<LeagueModel>) => {
       expect(item).toHaveProperty('id')
     })
   })
@@ -62,7 +62,7 @@ describe('Venues API endpoints', () => {
 
     expect(statusCode).toBe(StatusCodes.OK)
 
-    body.data.forEach((result: Attributes<VenueModel>) => {
+    body.data.forEach((result: Attributes<LeagueModel>) => {
       const included = includedFields.split(',')
       included.forEach((field) => {
         expect(result).toHaveProperty(field)

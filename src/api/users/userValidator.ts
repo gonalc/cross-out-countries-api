@@ -8,7 +8,7 @@ const SCHEMA = Joi.object({
   id: Joi.number().integer(),
   email: Joi.string().max(128),
   password: Joi.string().max(256),
-  venueId: Joi.number().integer(),
+  leagueId: Joi.number().integer(),
   createdAt: Joi.date(),
   updatedAt: Joi.date(),
 })

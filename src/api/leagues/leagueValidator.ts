@@ -1,6 +1,6 @@
 import Joi from 'joi'
 import { getValidators } from '../../utils/validate'
-import VenueService from './venueService'
+import VenueService from './leagueService'
 
 const service = new VenueService()
 

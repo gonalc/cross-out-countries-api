@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import authRoutes from './api/auth/AuthRoutes'
 import userRoutes from './api/users/userRoutes'
-import venueRoutes from './api/venues/venueRoutes'
+import leagueRoutes from './api/leagues/leagueRoutes'
 
 const router = Router()
 
@@ -16,6 +16,6 @@ router.get('/', (req, res) => {
 
 router.use('/auth', authRoutes)
 router.use('/users', userRoutes)
-router.use('/venues', venueRoutes)
+router.use('/leagues', leagueRoutes)
 
 export default router

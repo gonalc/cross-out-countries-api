@@ -6,7 +6,7 @@ import db from '../src/db'
 import { generateSalt, hashPassword } from '../src/utils/crypto'
 import { CreationAttributes } from 'sequelize'
 import UserModel from '../src/api/users/userModel'
-import VenueModel from '../src/api/venues/venueModel'
+import LeagueModel from '../src/api/leagues/leagueModel'
 
 const NAME = 'Auth'
 const BASE_URL = '/api/auth'
@@ -19,21 +19,21 @@ const WRONG_EMAIL = 'thisemaildoesntexist@database.com'
 
 // Dependencies
 const USERS_URL = '/api/users'
-const VENUES_URL = '/api/venues'
+const LEAGUES_URL = '/api/leagues'
 
 const userItem: CreationAttributes<UserModel> = {
   email: `test_auth+${new Date().getTime()}@email.com`,
   password: TEST_PASSWORD,
 }
 
-const venueItem: CreationAttributes<VenueModel> = {
-  name: 'TEST_auth__Venue',
+const leagueItem: CreationAttributes<LeagueModel> = {
+  name: 'TEST_auth__League',
   defaultTax: 14,
 }
 
 describe('Auth API tests', () => {
   let createdUserId: number
-  let createdVenueId: number
+  let createdLeagueId: number
 
   beforeAll(async () => {
     await db.sync()
@@ -56,18 +56,18 @@ describe('Auth API tests', () => {
   })
 
   it(`Should create the dependencies for the ${NAME}.`, async () => {
-    // Venue
-    const venueRes = await request(app).post(VENUES_URL).send(venueItem)
+    // League
+    const leagueRes = await request(app).post(LEAGUES_URL).send(leagueItem)
 
-    expect(venueRes.statusCode).toBe(StatusCodes.CREATED)
-    expect(venueRes.body.data).toHaveProperty('id')
+    expect(leagueRes.statusCode).toBe(StatusCodes.CREATED)
+    expect(leagueRes.body.data).toHaveProperty('id')
 
-    createdVenueId = venueRes.body.data.id
+    createdLeagueId = leagueRes.body.data.id
 
     // User
     const newUser = {
       ...userItem,
-      venueId: createdVenueId,
+      leagueId: createdLeagueId,
     }
 
     const userRes = await request(app).post(USERS_URL).send(newUser)

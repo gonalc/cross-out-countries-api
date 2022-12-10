@@ -9,11 +9,11 @@ import {
 import sequelize from '../../db'
 import UserModel from '../users/userModel'
 
-const tableName = 'venue'
+const tableName = 'league'
 
-class VenueModel extends Model<
-  InferAttributes<VenueModel>,
-  InferCreationAttributes<VenueModel>
+class LeagueModel extends Model<
+  InferAttributes<LeagueModel>,
+  InferCreationAttributes<LeagueModel>
 > {
   declare id: CreationOptional<number>
   declare name: string
@@ -26,7 +26,7 @@ class VenueModel extends Model<
   declare user?: NonAttribute<UserModel>
 }
 
-VenueModel.init(
+LeagueModel.init(
   {
     id: {
       type: DataTypes.INTEGER.UNSIGNED,
@@ -55,4 +55,4 @@ VenueModel.init(
   }
 )
 
-export default VenueModel
+export default LeagueModel

@@ -9,7 +9,7 @@ import {
 } from 'sequelize'
 import sequelize from '../../db'
 import { generateSalt, hashPassword } from '../../utils/crypto'
-import VenueModel from '../venues/venueModel'
+import LeagueModel from '../leagues/leagueModel'
 
 const tableName = 'user'
 
@@ -21,12 +21,12 @@ class UserModel extends Model<
   declare email: string
   declare password: string
   declare salt: CreationOptional<string>
-  declare venueId: ForeignKey<VenueModel['id']>
+  declare leagueId: ForeignKey<LeagueModel['id']>
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
 
   // Associations
-  declare venue?: NonAttribute<VenueModel>
+  declare league?: NonAttribute<LeagueModel>
 }
 
 UserModel.init(
@@ -47,7 +47,7 @@ UserModel.init(
     salt: {
       type: DataTypes.STRING,
     },
-    venueId: {
+    leagueId: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
     },
@@ -87,14 +87,14 @@ UserModel.init(
   }
 )
 
-VenueModel.hasOne(UserModel, {
-  foreignKey: 'venueId',
+LeagueModel.hasOne(UserModel, {
+  foreignKey: 'leagueId',
   as: 'user',
 })
 
-UserModel.belongsTo(VenueModel, {
+UserModel.belongsTo(LeagueModel, {
   onDelete: 'CASCADE',
-  as: 'venue',
+  as: 'league',
 })
 
 export default UserModel

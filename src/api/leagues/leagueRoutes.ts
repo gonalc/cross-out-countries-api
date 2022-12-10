@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import VenueController from './venueController'
-import { validator, find } from './venueValidator'
+import VenueController from './leagueController'
+import { validator, find } from './leagueValidator'
 
 const router = Router()
 const controller = new VenueController()

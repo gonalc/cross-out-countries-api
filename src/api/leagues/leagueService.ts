@@ -1,4 +1,4 @@
-import VenueModel from './venueModel'
+import VenueModel from './leagueModel'
 import GenericService, { IServiceOptions } from '../GenericService'
 
 const options: IServiceOptions<VenueModel> = {

@@ -5,10 +5,10 @@ import { Attributes, CreationAttributes, ModelStatic } from 'sequelize'
 import db from '../src/db'
 
 import UserModel from '../src/api/users/userModel'
-import VenueModel from '../src/api/venues/venueModel'
+import LeagueModel from '../src/api/leagues/leagueModel'
 
-const venueItem: CreationAttributes<VenueModel> = {
-  name: 'TEST__Venue',
+const leagueItem: CreationAttributes<LeagueModel> = {
+  name: 'TEST__League',
   defaultTax: 14,
 }
 
@@ -16,14 +16,14 @@ const NAME = 'User'
 const BASE_URL = '/api/users'
 
 // Dependencies:
-const VENUES_URL = '/api/venues'
+const LEAGUES_URL = '/api/leagues'
 
 const baseItem = {
   email: `test+${new Date().getTime()}@email.com`,
   password: 'Prueba23',
 }
 
-const includedFields = 'venue'
+const includedFields = 'league'
 
 let newItem: CreationAttributes<UserModel>
 
@@ -41,16 +41,16 @@ describe('Users API endpoints', () => {
   })
 
   it(`Should create the needed dependencies for the ${NAME}`, async () => {
-    // Venue
-    const venuesRes = await request(app).post(VENUES_URL).send(venueItem)
+    // League
+    const leaguesRes = await request(app).post(LEAGUES_URL).send(leagueItem)
 
     newItem = {
       ...baseItem,
-      venueId: venuesRes.body.data.id,
+      leagueId: leaguesRes.body.data.id,
     }
 
-    expect(venuesRes.statusCode).toBe(StatusCodes.CREATED)
-    expect(venuesRes.body.data).toHaveProperty('id')
+    expect(leaguesRes.statusCode).toBe(StatusCodes.CREATED)
+    expect(leaguesRes.body.data).toHaveProperty('id')
   })
 
   it(`Should create a ${NAME} and return the created one.`, async () => {
