@@ -1,9 +1,9 @@
 import { Router } from 'express'
-import VenueController from './leagueController'
+import LeagueController from './leagueController'
 import { validator, find } from './leagueValidator'
 
 const router = Router()
-const controller = new VenueController()
+const controller = new LeagueController()
 
 router.get('/paged', controller.fetchPaged)
 router.get('/:id', find, controller.fetchSingle)
