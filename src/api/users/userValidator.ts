@@ -4,7 +4,7 @@ import UserService from './userService'
 
 const service = new UserService()
 
-const SCHEMA = Joi.object({
+export const SCHEMA = Joi.object({
   id: Joi.number().integer(),
   email: Joi.string().max(128),
   password: Joi.string().max(256),

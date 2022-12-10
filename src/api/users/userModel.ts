@@ -87,7 +87,7 @@ UserModel.init(
   }
 )
 
-LeagueModel.hasOne(UserModel, {
+LeagueModel.associations.user = LeagueModel.hasOne(UserModel, {
   foreignKey: 'leagueId',
   as: 'user',
 })

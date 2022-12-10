@@ -9,7 +9,7 @@ router.get('/paged', controller.fetchPaged)
 router.get('/:id', find, controller.fetchSingle)
 router.get('/', controller.fetchAll)
 
-router.post('/', validator, controller.create)
+router.post('/', validator, controller.createLeague)
 
 router.put('/:id', find, validator, controller.update)
 

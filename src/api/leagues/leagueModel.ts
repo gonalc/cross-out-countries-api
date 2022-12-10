@@ -1,4 +1,5 @@
 import {
+  Association,
   CreationOptional,
   DataTypes,
   InferAttributes,
@@ -24,6 +25,9 @@ class LeagueModel extends Model<
 
   // Associations
   declare user?: NonAttribute<UserModel>
+  declare static associations: {
+    user?: Association<LeagueModel, UserModel>
+  }
 }
 
 LeagueModel.init(

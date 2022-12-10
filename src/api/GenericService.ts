@@ -1,6 +1,7 @@
 import Boom from '@hapi/boom'
 import type {
   Attributes,
+  CreateOptions,
   CreationAttributes,
   Includeable,
   Model,
@@ -72,9 +73,12 @@ class GenericService<M extends Model> {
     }
   }
 
-  async create(data: CreationAttributes<M>) {
+  async create(
+    data: CreationAttributes<M>,
+    createOptions: CreateOptions<Attributes<M>> = {}
+  ) {
     try {
-      const created = await this.Model.create(data)
+      const created = await this.Model.create(data, createOptions)
 
       return created
     } catch (error) {
