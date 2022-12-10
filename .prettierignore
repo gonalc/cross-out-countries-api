@@ -1,0 +1,14 @@
+build
+
+# Minified files
+**/*{.,-}min.js
+
+package.josn
+yarn.lock
+
+node_modules
+.husky
+
+.eslintrc
+
+logs
