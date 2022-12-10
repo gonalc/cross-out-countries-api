@@ -1,4 +1,4 @@
-# Yanapak API
+# Croos Out Countries API
 
 In order to start this project, run the following commands:
 
