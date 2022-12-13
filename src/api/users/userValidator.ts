@@ -7,8 +7,11 @@ const service = new UserService()
 export const SCHEMA = Joi.object({
   id: Joi.number().integer(),
   email: Joi.string().max(128),
+  name: Joi.string().max(128),
+  birthdate: Joi.date(),
+  country: Joi.string().max(128),
+  city: Joi.string().max(128).allow(null),
   password: Joi.string().max(256),
-  leagueId: Joi.number().integer(),
   createdAt: Joi.date(),
   updatedAt: Joi.date(),
 })

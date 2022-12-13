@@ -1,7 +1,7 @@
 import {
+  Association,
   CreationOptional,
   DataTypes,
-  ForeignKey,
   InferAttributes,
   InferCreationAttributes,
   Model,
@@ -18,15 +18,21 @@ class UserModel extends Model<
   InferCreationAttributes<UserModel>
 > {
   declare id: CreationOptional<number>
+  declare name: string
+  declare birthdate: Date
+  declare country: string
+  declare city: CreationOptional<string>
   declare email: string
   declare password: string
   declare salt: CreationOptional<string>
-  declare leagueId: ForeignKey<LeagueModel['id']>
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
 
   // Associations
-  declare league?: NonAttribute<LeagueModel>
+  declare leagues?: NonAttribute<LeagueModel[]>
+  declare static associations: {
+    leagues?: Association<UserModel, LeagueModel>
+  }
 }
 
 UserModel.init(
@@ -40,16 +46,27 @@ UserModel.init(
       type: DataTypes.STRING(128),
       allowNull: false,
     },
+    name: {
+      type: DataTypes.STRING(128),
+      allowNull: false,
+    },
+    birthdate: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    country: {
+      type: DataTypes.STRING(128),
+      allowNull: false,
+    },
+    city: {
+      type: DataTypes.STRING(128),
+    },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
     },
     salt: {
       type: DataTypes.STRING,
-    },
-    leagueId: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -86,15 +103,5 @@ UserModel.init(
     },
   }
 )
-
-LeagueModel.associations.user = LeagueModel.hasOne(UserModel, {
-  foreignKey: 'leagueId',
-  as: 'user',
-})
-
-UserModel.belongsTo(LeagueModel, {
-  onDelete: 'CASCADE',
-  as: 'league',
-})
 
 export default UserModel

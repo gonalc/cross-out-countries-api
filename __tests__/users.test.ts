@@ -9,7 +9,6 @@ import LeagueModel from '../src/api/leagues/leagueModel'
 
 const leagueItem: CreationAttributes<LeagueModel> = {
   name: 'TEST__League',
-  defaultTax: 14,
 }
 
 const NAME = 'User'
@@ -21,9 +20,13 @@ const LEAGUES_URL = '/api/leagues'
 const baseItem = {
   email: `test+${new Date().getTime()}@email.com`,
   password: 'Prueba23',
+  name: 'Test user',
+  birthdate: new Date('1993/03/21'),
+  country: 'spain',
+  city: 'Madrid',
 }
 
-const includedFields = 'league'
+const includedFields = 'leagues'
 
 let newItem: CreationAttributes<UserModel>
 
@@ -46,7 +49,6 @@ describe('Users API endpoints', () => {
 
     newItem = {
       ...baseItem,
-      leagueId: leaguesRes.body.data.id,
     }
 
     expect(leaguesRes.statusCode).toBe(StatusCodes.CREATED)

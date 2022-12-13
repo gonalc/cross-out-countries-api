@@ -28,7 +28,7 @@ export async function loginValidator(
     const user = await userService.getByEmail(email)
 
     if (!user) {
-      throw Boom.notFound('User not found')
+      throw Boom.notFound('User not found.')
     }
 
     if (user) {

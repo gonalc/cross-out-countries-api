@@ -18,15 +18,14 @@ class LeagueModel extends Model<
 > {
   declare id: CreationOptional<number>
   declare name: string
-  declare defaultTax: number
   // declare logoId: number // provisional, need to make the images service
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
 
   // Associations
-  declare user?: NonAttribute<UserModel>
+  declare players?: NonAttribute<UserModel[]>
   declare static associations: {
-    user?: Association<LeagueModel, UserModel>
+    players?: Association<LeagueModel, UserModel>
   }
 }
 
@@ -40,9 +39,6 @@ LeagueModel.init(
     name: {
       type: DataTypes.STRING(128),
       allowNull: false,
-    },
-    defaultTax: {
-      type: DataTypes.FLOAT.UNSIGNED,
     },
     createdAt: {
       type: DataTypes.DATE,

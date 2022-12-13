@@ -8,11 +8,10 @@ import LeagueModel from '../src/api/leagues/leagueModel'
 const NAME = 'League'
 const BASE_URL = '/api/leagues'
 
-const includedFields = 'user'
+const includedFields = 'players'
 
 const newItem: CreationAttributes<LeagueModel> = {
   name: 'TEST__League',
-  defaultTax: 14,
 }
 
 const UPDATED_FIELD = 'name'

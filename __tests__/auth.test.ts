@@ -24,16 +24,18 @@ const LEAGUES_URL = '/api/leagues'
 const userItem: CreationAttributes<UserModel> = {
   email: `test_auth+${new Date().getTime()}@email.com`,
   password: TEST_PASSWORD,
+  name: 'Test user',
+  birthdate: new Date('1993/03/21'),
+  country: 'spain',
+  city: 'Madrid',
 }
 
 const leagueItem: CreationAttributes<LeagueModel> = {
   name: 'TEST_auth__League',
-  defaultTax: 14,
 }
 
 describe('Auth API tests', () => {
   let createdUserId: number
-  let createdLeagueId: number
 
   beforeAll(async () => {
     await db.sync()
@@ -62,12 +64,9 @@ describe('Auth API tests', () => {
     expect(leagueRes.statusCode).toBe(StatusCodes.CREATED)
     expect(leagueRes.body.data).toHaveProperty('id')
 
-    createdLeagueId = leagueRes.body.data.id
-
     // User
     const newUser = {
       ...userItem,
-      leagueId: createdLeagueId,
     }
 
     const userRes = await request(app).post(USERS_URL).send(newUser)
