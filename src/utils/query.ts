@@ -13,12 +13,12 @@ function getModifier(raw: TModifierRaw) {
   return operator
 }
 
-export function getPopulatedFields(req: express.Request): Includeable {
+export function getPopulatedFields(req: express.Request): Includeable[] {
   const { include } = req.query
 
   delete req.query.include
 
-  return include as Includeable
+  return include ? String(include).split(',') : []
 }
 
 export function getQueryFilters(req: express.Request): WhereOptions {

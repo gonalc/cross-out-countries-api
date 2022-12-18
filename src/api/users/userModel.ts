@@ -9,6 +9,7 @@ import {
 } from 'sequelize'
 import sequelize from '../../db'
 import { generateSalt, hashPassword } from '../../utils/crypto'
+import ConquistModel from '../conquists/conquistModel'
 import LeagueModel from '../leagues/leagueModel'
 
 const tableName = 'user'
@@ -30,8 +31,11 @@ class UserModel extends Model<
 
   // Associations
   declare leagues?: NonAttribute<LeagueModel[]>
+  declare conquists?: NonAttribute<ConquistModel[]>
+
   declare static associations: {
     leagues?: Association<UserModel, LeagueModel>
+    conquists?: Association<UserModel, ConquistModel>
   }
 }
 

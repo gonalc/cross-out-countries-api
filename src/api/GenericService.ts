@@ -18,7 +18,7 @@ export interface IServiceOptions<M extends Model> {
 }
 
 export interface IFetchOptions {
-  include?: Includeable
+  include?: Includeable[]
   where?: WhereOptions
 }
 
