@@ -1,9 +1,10 @@
 import Boom from '@hapi/boom'
-import { Attributes } from 'sequelize'
+import { Attributes, CreationAttributes } from 'sequelize'
 import { hashPassword } from '../../utils/crypto'
 import UserModel from '../users/userModel'
-import { signToken } from '../../utils/auth'
+import { signToken, verifyToken } from '../../utils/auth'
 import { omit } from 'lodash'
+import UserService from '../users/userService'
 
 type TUser = Attributes<UserModel>
 
@@ -30,11 +31,12 @@ interface IAuthService {
   _getToken: (userData: TUser) => string | void
 }
 
+const userService = new UserService()
+
 class AuthService implements IAuthService {
   async login(loginData: ILoginData): Promise<ILoginResponse> {
     const { user } = loginData
     const { password, salt } = user
-
     const passwordValid = this._comparePasswords(
       loginData.password,
       password,
@@ -44,6 +46,57 @@ class AuthService implements IAuthService {
     if (!passwordValid) {
       throw Boom.unauthorized('Credentials are not correct')
     }
+
+    const jwt = this._getToken(user)
+
+    if (!jwt) {
+      throw Boom.badRequest('JWT could not be signed')
+    }
+
+    const responseData: ILoginResponse = {
+      user: omit(user, ['salt', 'password']),
+      jwt,
+    }
+
+    return responseData
+  }
+
+  async signup(
+    userToCreate: CreationAttributes<UserModel>
+  ): Promise<ILoginResponse> {
+    const createdUser = await userService.create(userToCreate)
+    const user = createdUser.toJSON()
+
+    const jwt = this._getToken(user)
+
+    if (!jwt) {
+      throw Boom.badRequest('JWT could not be signed')
+    }
+
+    const responseData: ILoginResponse = {
+      user: omit(user, ['salt', 'password']),
+      jwt,
+    }
+
+    return responseData
+  }
+
+  async check(token: string): Promise<ILoginResponse> {
+    const tokenPayload = verifyToken(token)
+
+    if (!tokenPayload) {
+      throw Boom.badRequest('Invalid JWT')
+    }
+
+    const { id } = tokenPayload
+
+    const userData = await userService.getSingle(id, {})
+
+    if (!userData) {
+      throw Boom.notFound('User not found')
+    }
+
+    const user = userData.toJSON()
 
     const jwt = this._getToken(user)
 
