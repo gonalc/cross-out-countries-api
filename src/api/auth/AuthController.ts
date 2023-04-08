@@ -18,6 +18,34 @@ class AuthController {
       return next(error)
     }
   }
+
+  signup = async (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    try {
+      const data = await service.signup(req.body)
+
+      return res.status(StatusCodes.OK).json({ data })
+    } catch (error) {
+      return next(error)
+    }
+  }
+
+  check = async (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    try {
+      const data = await service.check(req.body.jwt)
+
+      return res.status(StatusCodes.OK).json({ data })
+    } catch (error) {
+      return next(error)
+    }
+  }
 }
 
 export default AuthController
