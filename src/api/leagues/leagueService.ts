@@ -4,6 +4,7 @@ import { CreationAttributes } from 'sequelize'
 import Boom from '@hapi/boom'
 import UserService from '../users/userService'
 import LeagueUserService from '../leagueUsers/leagueUserService'
+import UserModel from '../users/userModel'
 
 type AppCreationLeague = CreationAttributes<LeagueModel> & {
   user: {
@@ -41,6 +42,25 @@ class LeagueService extends GenericService<LeagueModel> {
       })
 
       return { ...createdLeague.toJSON(), players: [foundUser.toJSON()] }
+    } catch (error) {
+      throw Boom.badRequest(String(error))
+    }
+  }
+
+  async getLeaguesByUser(userId: number) {
+    try {
+      const leagues = await this.getAll({
+        include: [
+          {
+            model: UserModel,
+            as: 'players',
+            where: { id: userId },
+            attributes: ['id', 'name', 'country', 'city'],
+          },
+        ],
+      })
+
+      return leagues
     } catch (error) {
       throw Boom.badRequest(String(error))
     }

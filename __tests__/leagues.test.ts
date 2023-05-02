@@ -145,6 +145,20 @@ describe('Leagues API endpoints', () => {
     })
   })
 
+  it('Should get all the leagues the given user is involved in.', async () => {
+    const url = `${BASE_URL}/from-user/${createdId}`
+
+    const res = await request(app).get(url)
+
+    const { statusCode, body } = res
+
+    expect(statusCode).toBe(StatusCodes.OK)
+
+    body.data.forEach((item: Attributes<LeagueModel>) => {
+      expect(item).toHaveProperty('players')
+    })
+  })
+
   it(`Should update the right ${NAME} depending on its ID and return the updated entry.`, async () => {
     const url = `${BASE_URL}/${createdId}`
 
