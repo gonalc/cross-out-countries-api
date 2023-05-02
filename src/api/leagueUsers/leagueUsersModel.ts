@@ -48,12 +48,14 @@ LeagueModel.associations.players = LeagueModel.belongsToMany(UserModel, {
   through: LeagueUserModel,
   foreignKey: 'league_id',
   as: 'players',
+  onDelete: 'CASCADE',
 })
 
 UserModel.associations.leagues = UserModel.belongsToMany(LeagueModel, {
   through: LeagueUserModel,
   foreignKey: 'user_id',
   as: 'leagues',
+  onDelete: 'CASCADE',
 })
 
 export default LeagueUserModel

@@ -17,7 +17,7 @@ const BASE_URL = '/api/users'
 // Dependencies:
 const LEAGUES_URL = '/api/leagues'
 
-const baseItem = {
+const baseItem: CreationAttributes<UserModel> = {
   email: `test+${new Date().getTime()}@email.com`,
   password: 'Prueba23',
   name: 'Test user',
@@ -27,8 +27,6 @@ const baseItem = {
 }
 
 const includedFields = 'leagues'
-
-let newItem: CreationAttributes<UserModel>
 
 const UPDATED_FIELD = 'email'
 const UPDATED_VALUE = `test+${new Date().getTime()}__edited__@email.com`
@@ -43,20 +41,8 @@ describe('Users API endpoints', () => {
     await db.sync()
   })
 
-  it(`Should create the needed dependencies for the ${NAME}`, async () => {
-    // League
-    const leaguesRes = await request(app).post(LEAGUES_URL).send(leagueItem)
-
-    newItem = {
-      ...baseItem,
-    }
-
-    expect(leaguesRes.statusCode).toBe(StatusCodes.CREATED)
-    expect(leaguesRes.body.data).toHaveProperty('id')
-  })
-
   it(`Should create a ${NAME} and return the created one.`, async () => {
-    const res = await request(app).post(BASE_URL).send(newItem)
+    const res = await request(app).post(BASE_URL).send(baseItem)
 
     const { statusCode, body } = res
 
@@ -65,6 +51,21 @@ describe('Users API endpoints', () => {
     expect(body.data).toHaveProperty('id')
 
     createdId = body.data.id
+  })
+
+  it(`Should create the needed dependencies for the ${NAME}`, async () => {
+    // League
+    const leaguesRes = await request(app)
+      .post(LEAGUES_URL)
+      .send({
+        ...leagueItem,
+        user: {
+          id: createdId,
+        },
+      })
+
+    expect(leaguesRes.statusCode).toBe(StatusCodes.CREATED)
+    expect(leaguesRes.body.data).toHaveProperty('id')
   })
 
   it(`Should get all the ${NAME} in the DB.`, async () => {

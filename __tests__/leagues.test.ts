@@ -4,14 +4,27 @@ import { StatusCodes } from 'http-status-codes'
 import { Attributes, CreationAttributes, ModelStatic } from 'sequelize'
 import db from '../src/db'
 import LeagueModel from '../src/api/leagues/leagueModel'
+import UserModel from '../src/api/users/userModel'
 
 const NAME = 'League'
 const BASE_URL = '/api/leagues'
+
+// Dependencies
+const USERS_URL = '/api/users'
 
 const includedFields = 'players'
 
 const newItem: CreationAttributes<LeagueModel> = {
   name: 'TEST__League',
+}
+
+const userItem: CreationAttributes<UserModel> = {
+  email: `test_leagues_user+${new Date().getTime()}@email.com`,
+  password: 'Prueba23',
+  name: 'Test user',
+  birthdate: new Date('1993/03/21'),
+  country: 'spain',
+  city: 'Madrid',
 }
 
 const UPDATED_FIELD = 'name'
@@ -22,13 +35,35 @@ const PAGINATION_LIMIT = 3
 
 describe('Leagues API endpoints', () => {
   let createdId: number
+  let createdUserId: number
 
   beforeAll(async () => {
     await db.sync()
   })
 
+  it(`Should create the dependencies for the ${NAME}.`, async () => {
+    // User
+    const newUser = {
+      ...userItem,
+    }
+
+    const userRes = await request(app).post(USERS_URL).send(newUser)
+
+    expect(userRes.statusCode).toBe(StatusCodes.CREATED)
+    expect(userRes.body.data).toHaveProperty('id')
+
+    createdUserId = userRes.body.data.id
+  })
+
   it(`Should create a ${NAME} and return the created one.`, async () => {
-    const res = await request(app).post(BASE_URL).send(newItem)
+    const res = await request(app)
+      .post(BASE_URL)
+      .send({
+        ...newItem,
+        user: {
+          id: createdUserId,
+        },
+      })
 
     const { statusCode, body } = res
 
@@ -156,6 +191,18 @@ describe('Leagues API endpoints', () => {
     expect(statusCode).toBe(StatusCodes.OK)
     expect(body.data).toHaveProperty('id')
     expect(body.data.id).toBe(createdId)
+  })
+
+  it(`Should delete the ${NAME} dependencies.`, async () => {
+    const userUrl = `${USERS_URL}/${createdUserId}`
+
+    const res = await request(app).delete(userUrl)
+
+    const { statusCode, body } = res
+
+    expect(statusCode).toBe(StatusCodes.OK)
+    expect(body.data).toHaveProperty('id')
+    expect(body.data.id).toBe(createdUserId)
   })
 
   afterAll(async () => {

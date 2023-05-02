@@ -6,7 +6,6 @@ import db from '../src/db'
 import { generateSalt, hashPassword } from '../src/utils/crypto'
 import { CreationAttributes } from 'sequelize'
 import UserModel from '../src/api/users/userModel'
-import LeagueModel from '../src/api/leagues/leagueModel'
 
 const NAME = 'Auth'
 const BASE_URL = '/api/auth'
@@ -19,7 +18,6 @@ const WRONG_EMAIL = 'thisemaildoesntexist@database.com'
 
 // Dependencies
 const USERS_URL = '/api/users'
-const LEAGUES_URL = '/api/leagues'
 
 const userItem: CreationAttributes<UserModel> = {
   email: `test_auth+${new Date().getTime()}@email.com`,
@@ -28,10 +26,6 @@ const userItem: CreationAttributes<UserModel> = {
   birthdate: new Date('1993/03/21'),
   country: 'spain',
   city: 'Madrid',
-}
-
-const leagueItem: CreationAttributes<LeagueModel> = {
-  name: 'TEST_auth__League',
 }
 
 describe('Auth API tests', () => {
@@ -58,12 +52,6 @@ describe('Auth API tests', () => {
   })
 
   it(`Should create the dependencies for the ${NAME}.`, async () => {
-    // League
-    const leagueRes = await request(app).post(LEAGUES_URL).send(leagueItem)
-
-    expect(leagueRes.statusCode).toBe(StatusCodes.CREATED)
-    expect(leagueRes.body.data).toHaveProperty('id')
-
     // User
     const newUser = {
       ...userItem,

@@ -9,6 +9,10 @@ const SCHEMA = Joi.object({
   name: Joi.string().max(128),
   createdAt: Joi.date(),
   updatedAt: Joi.date(),
+  // Asssociations
+  user: Joi.object({
+    id: Joi.number().integer(),
+  }),
 })
 
 export const [validator, find] = getValidators(SCHEMA, service)
