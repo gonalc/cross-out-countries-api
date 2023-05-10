@@ -27,6 +27,7 @@ const userItem: CreationAttributes<UserModel> = {
   birthdate: new Date('1993/03/21'),
   country: 'Spain',
   city: 'Madrid',
+  score: 0,
 }
 
 const UPDATED_FIELD: keyof Attributes<ConquistModel> = 'country'

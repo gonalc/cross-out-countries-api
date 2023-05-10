@@ -26,6 +26,7 @@ class UserModel extends Model<
   declare email: string
   declare password: string
   declare salt: CreationOptional<string>
+  declare score: number
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
 
@@ -71,6 +72,11 @@ UserModel.init(
     },
     salt: {
       type: DataTypes.STRING,
+    },
+    score: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      defaultValue: 0,
+      allowNull: false,
     },
     createdAt: {
       type: DataTypes.DATE,

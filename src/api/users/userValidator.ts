@@ -12,6 +12,7 @@ export const SCHEMA = Joi.object({
   country: Joi.string().max(128),
   city: Joi.string().max(128).allow(null),
   password: Joi.string().max(256),
+  score: Joi.number().integer().allow(null),
   createdAt: Joi.date(),
   updatedAt: Joi.date(),
 })

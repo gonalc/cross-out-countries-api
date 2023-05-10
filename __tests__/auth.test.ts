@@ -26,6 +26,7 @@ const userItem: CreationAttributes<UserModel> = {
   birthdate: new Date('1993/03/21'),
   country: 'spain',
   city: 'Madrid',
+  score: 0,
 }
 
 describe('Auth API tests', () => {

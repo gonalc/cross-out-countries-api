@@ -24,6 +24,7 @@ const baseItem: CreationAttributes<UserModel> = {
   birthdate: new Date('1993/03/21'),
   country: 'spain',
   city: 'Madrid',
+  score: 0,
 }
 
 const includedFields = 'leagues'
