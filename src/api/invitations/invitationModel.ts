@@ -6,6 +6,7 @@ import {
   Model,
 } from 'sequelize'
 import sequelize from '../../db'
+import UserModel from '../users/userModel'
 
 const tableName = 'invitation'
 
@@ -16,6 +17,7 @@ class InvitationModel extends Model<
   declare id: CreationOptional<number>
   declare userId: number
   declare leagueId: number
+  declare leagueName: string
   declare createdAt: CreationOptional<Date>
 }
 
@@ -28,6 +30,10 @@ InvitationModel.init(
     },
     leagueId: {
       type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
+    leagueName: {
+      type: DataTypes.STRING(128),
       allowNull: false,
     },
     userId: {
@@ -46,5 +52,13 @@ InvitationModel.init(
     underscored: true,
   }
 )
+
+InvitationModel.belongsTo(UserModel, { foreignKey: 'user_id' })
+
+UserModel.associations.invitations = UserModel.hasMany(InvitationModel, {
+  foreignKey: 'user_id',
+  as: 'invitations',
+  onDelete: 'CASCADE',
+})
 
 export default InvitationModel

@@ -11,6 +11,7 @@ const leagueService = new LeagueService()
 const SCHEMA = Joi.object({
   userId: Joi.number().integer().positive(),
   leagueId: Joi.number().integer().positive(),
+  leagueName: Joi.string().max(128).required(),
 })
 
 export async function invitationsValidator(
