@@ -53,7 +53,7 @@ InvitationModel.init(
   }
 )
 
-InvitationModel.belongsTo(UserModel, { foreignKey: 'user_id' })
+InvitationModel.belongsTo(UserModel, { foreignKey: 'userId' })
 
 UserModel.associations.invitations = UserModel.hasMany(InvitationModel, {
   foreignKey: 'user_id',

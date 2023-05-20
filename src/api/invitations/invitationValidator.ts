@@ -1,17 +1,23 @@
 import express from 'express'
 import Joi from 'joi'
 import Boom from '@hapi/boom'
-import validate from '../../utils/validate'
+import validate, { getValidators } from '../../utils/validate'
 import UserService from '../users/userService'
 import LeagueService from '../leagues/leagueService'
+import InvitationService from './invitationService'
 
 const userService = new UserService()
 const leagueService = new LeagueService()
 
+const service = new InvitationService()
+
 const SCHEMA = Joi.object({
+  id: Joi.number().integer(),
   userId: Joi.number().integer().positive(),
+  user_id: Joi.number().integer().positive(),
   leagueId: Joi.number().integer().positive(),
   leagueName: Joi.string().max(128).required(),
+  createdAt: Joi.date(),
 })
 
 export async function invitationsValidator(
@@ -40,3 +46,5 @@ export async function invitationsValidator(
     next(error)
   }
 }
+
+export const [validator, find] = getValidators(SCHEMA, service)
