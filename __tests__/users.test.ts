@@ -19,6 +19,7 @@ const LEAGUES_URL = '/api/leagues'
 
 const baseItem: CreationAttributes<UserModel> = {
   email: `test+${new Date().getTime()}@email.com`,
+  username: `username_${new Date().getTime()}__users`,
   password: 'Prueba23',
   name: 'Test user',
   birthdate: new Date('1993/03/21'),

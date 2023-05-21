@@ -23,6 +23,7 @@ const USERS_URL = '/api/users'
 const userItem: CreationAttributes<UserModel> = {
   email: `test_conquist+${new Date().getTime()}@email.com`,
   password: 'Prueba23',
+  username: `username_${new Date().getTime()}__conquists`,
   name: 'Test user for conquist',
   birthdate: new Date('1993/03/21'),
   country: 'Spain',
@@ -130,5 +131,9 @@ describe('Conquists API endpoints', () => {
     expect(statusCode).toBe(StatusCodes.OK)
     expect(body.data).toHaveProperty('id')
     expect(body.data.id).toBe(createdId)
+  })
+
+  afterAll(async () => {
+    await db.close()
   })
 })

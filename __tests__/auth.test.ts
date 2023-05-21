@@ -21,6 +21,7 @@ const USERS_URL = '/api/users'
 
 const userItem: CreationAttributes<UserModel> = {
   email: `test_auth+${new Date().getTime()}@email.com`,
+  username: `username_${new Date().getTime()}__auth`,
   password: TEST_PASSWORD,
   name: 'Test user',
   birthdate: new Date('1993/03/21'),

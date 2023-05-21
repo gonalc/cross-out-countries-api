@@ -21,6 +21,7 @@ const newItem: CreationAttributes<LeagueModel> = {
 const userItem: CreationAttributes<UserModel> = {
   email: `test_leagues_user+${new Date().getTime()}@email.com`,
   password: 'Prueba23',
+  username: `username_${new Date().getTime()}__leagues`,
   name: 'Test user',
   birthdate: new Date('1993/03/21'),
   country: 'spain',

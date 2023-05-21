@@ -21,6 +21,7 @@ class UserModel extends Model<
 > {
   declare id: CreationOptional<number>
   declare name: string
+  declare username: string
   declare birthdate: Date
   declare country: string
   declare city: CreationOptional<string>
@@ -53,10 +54,16 @@ UserModel.init(
     email: {
       type: DataTypes.STRING(128),
       allowNull: false,
+      unique: true,
     },
     name: {
       type: DataTypes.STRING(128),
       allowNull: false,
+    },
+    username: {
+      type: DataTypes.STRING(128),
+      allowNull: false,
+      unique: true,
     },
     birthdate: {
       type: DataTypes.DATE,

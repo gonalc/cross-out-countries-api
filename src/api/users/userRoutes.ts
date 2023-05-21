@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { validator, find } from './userValidator'
+import { validator, find, checkIfUserIsUnique } from './userValidator'
 import UserController from './userController'
 
 const router = Router()
@@ -9,7 +9,7 @@ router.get('/paged', controller.fetchPaged)
 router.get('/:id', find, controller.fetchSingle)
 router.get('/', controller.fetchAll)
 
-router.post('/', validator, controller.create)
+router.post('/', validator, checkIfUserIsUnique, controller.create)
 
 router.put('/:id', find, validator, controller.update)
 

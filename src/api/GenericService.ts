@@ -63,6 +63,16 @@ class GenericService<M extends Model> {
     }
   }
 
+  async getOneByField(filters: IFetchOptions) {
+    try {
+      const item = await this.Model.findOne(filters)
+
+      return item
+    } catch (error) {
+      throw Boom.badRequest(String(error))
+    }
+  }
+
   async exists(id: number) {
     try {
       const result = await this.Model.findByPk(id)
