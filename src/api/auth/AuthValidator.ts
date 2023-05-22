@@ -3,11 +3,12 @@ import Boom from '@hapi/boom'
 import Joi from 'joi'
 import validate from '../../utils/validate'
 import UserService from '../users/userService'
+import { Op } from 'sequelize'
 
 const userService = new UserService()
 
 const SCHEMA = Joi.object({
-  email: Joi.string().max(128),
+  userKey: Joi.string().max(128),
   password: Joi.string().max(128),
 })
 
@@ -23,9 +24,13 @@ export async function loginValidator(
       throw Boom.notAcceptable('Payload is wrong.')
     }
 
-    const { email } = req.body
+    const { userKey } = req.body
 
-    const user = await userService.getByEmail(email)
+    const user = await userService.getOneByField({
+      where: {
+        [Op.or]: [{ email: userKey }, { username: userKey }],
+      },
+    })
 
     if (!user) {
       throw Boom.notFound('User not found.')

@@ -67,11 +67,28 @@ describe('Auth API tests', () => {
     createdUserId = userRes.body.data.id
   })
 
-  it('Should login successfully and get the jwt token', async () => {
+  it('Should login successfully with email and get the jwt token', async () => {
     const url = `${BASE_URL}/login`
 
     const loginData = {
-      email: userItem.email,
+      userKey: userItem.email,
+      password: TEST_PASSWORD,
+    }
+
+    const res = await request(app).post(url).send(loginData)
+
+    const { statusCode, body } = res
+
+    expect(statusCode).toBe(StatusCodes.OK)
+    expect(body.data).toHaveProperty('jwt')
+    expect(body.data).toHaveProperty('user')
+  })
+
+  it('Should login successfully with username and get the jwt token', async () => {
+    const url = `${BASE_URL}/login`
+
+    const loginData = {
+      userKey: userItem.username,
       password: TEST_PASSWORD,
     }
 
@@ -88,7 +105,7 @@ describe('Auth API tests', () => {
     const url = `${BASE_URL}/login`
 
     const loginData = {
-      email: WRONG_EMAIL,
+      userKey: WRONG_EMAIL,
       password: TEST_PASSWORD,
     }
 
@@ -103,7 +120,7 @@ describe('Auth API tests', () => {
     const url = `${BASE_URL}/login`
 
     const loginData = {
-      email: userItem.email,
+      userKey: userItem.email,
       password: WRONG_PASSWORD,
     }
 
