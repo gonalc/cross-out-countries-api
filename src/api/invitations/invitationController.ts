@@ -25,6 +25,22 @@ class InvitationController extends GenericController<InvitationsService> {
       return next(error)
     }
   }
+
+  invite = async (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    try {
+      const { username, leagueId } = req.body
+
+      const data = await this.service.invite(username, leagueId)
+
+      return res.status(StatusCodes.OK).json({ data })
+    } catch (error) {
+      return next(error)
+    }
+  }
 }
 
 export default InvitationController
