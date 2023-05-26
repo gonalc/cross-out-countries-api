@@ -53,14 +53,24 @@ class LeagueService extends GenericService<LeagueModel> {
         include: [
           {
             model: UserModel,
-            as: 'players',
-            where: { id: userId },
             attributes: ['id', 'name', 'country', 'city'],
+            through: {
+              attributes: [],
+            },
+            as: 'players',
           },
         ],
       })
 
-      return leagues
+      return leagues.filter((league) => {
+        const { players } = league
+
+        if (!players?.length) return false
+
+        const playerIndex = players.findIndex((player) => player.id === userId)
+
+        return playerIndex >= 0
+      })
     } catch (error) {
       throw Boom.badRequest(String(error))
     }
