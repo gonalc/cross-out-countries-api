@@ -20,6 +20,7 @@ class ConquistModel extends Model<
   declare birthYear: number
   declare place: string
   declare userId: number
+  declare score: number
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
 }
@@ -49,6 +50,11 @@ ConquistModel.init(
     userId: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
+    },
+    score: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+      defaultValue: 0,
     },
     createdAt: {
       type: DataTypes.DATE,
