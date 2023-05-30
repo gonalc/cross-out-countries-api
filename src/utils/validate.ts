@@ -30,6 +30,26 @@ export const getValidators = (
     }
   }
 
+  const manyValidator = async (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    try {
+      if (Array.isArray(req.body)) {
+        for (const item of req.body) {
+          await validate(item, Schema)
+        }
+
+        next()
+      } else {
+        next(Boom.notAcceptable('Payload must be an array.'))
+      }
+    } catch (error) {
+      next(error)
+    }
+  }
+
   const find = async (
     req: express.Request,
     res: express.Response,
@@ -55,7 +75,7 @@ export const getValidators = (
     }
   }
 
-  return [validator, find]
+  return [validator, find, manyValidator]
 }
 
 export default validate

@@ -96,6 +96,16 @@ class GenericService<M extends Model> {
     }
   }
 
+  async createMany(data: CreationAttributes<M>[]) {
+    try {
+      const created = await this.Model.bulkCreate(data, { validate: true })
+
+      return created
+    } catch (error) {
+      throw Boom.badRequest(String(error))
+    }
+  }
+
   async update(
     id: Attributes<M>['id'],
     data: UpdateOptions<Attributes<M>>,

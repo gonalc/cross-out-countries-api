@@ -10,13 +10,13 @@ const NAME = 'Conquists'
 const BASE_URL = '/api/conquists'
 
 const baseItem = {
-  country: 'spain',
+  country: 'ES',
   province: 'Madrid',
   birthYear: 1994,
-  place: 'Italy',
+  place: 'IT',
 }
 
-let newItem: CreationAttributes<ConquistModel>
+let newItem: Omit<CreationAttributes<ConquistModel>, 'score'>
 
 // Dependencies
 const USERS_URL = '/api/users'
@@ -26,7 +26,7 @@ const userItem: CreationAttributes<UserModel> = {
   username: `username_${new Date().getTime()}__conquists`,
   name: 'Test user for conquist',
   birthdate: new Date('1993/03/21'),
-  country: 'Spain',
+  country: 'ES',
   city: 'Madrid',
   score: 0,
 }

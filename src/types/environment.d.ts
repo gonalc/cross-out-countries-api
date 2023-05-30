@@ -26,6 +26,9 @@ declare global {
       // Auth
       SECRET_KEY: string
       ALGORITHM?: import('jsonwebtoken').Algorithm
+      // Geocode
+      OPEN_CAGE_API: string
+      GEONAME_USERNAME: string
     }
   }
 }
