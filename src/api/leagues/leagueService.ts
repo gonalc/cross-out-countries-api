@@ -47,7 +47,7 @@ class LeagueService extends GenericService<LeagueModel> {
     }
   }
 
-  async getLeaguesByUser(userId: number) {
+  async getLeaguesByUser(userId: number): Promise<LeagueModel[]> {
     try {
       const leagues = await this.getAll({
         include: [
@@ -60,6 +60,7 @@ class LeagueService extends GenericService<LeagueModel> {
             as: 'players',
           },
         ],
+        order: [['updatedAt', 'DESC']],
       })
 
       return leagues.filter((league) => {

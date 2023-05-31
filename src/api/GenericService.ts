@@ -6,6 +6,7 @@ import type {
   Includeable,
   Model,
   ModelStatic,
+  Order,
   UpdateOptions,
   WhereOptions,
 } from 'sequelize'
@@ -20,6 +21,7 @@ export interface IServiceOptions<M extends Model> {
 export interface IFetchOptions {
   include?: Includeable[]
   where?: WhereOptions
+  order?: Order
 }
 
 export interface IFetchPagedOptions extends IFetchOptions, IPagination {}
