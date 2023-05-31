@@ -1,5 +1,6 @@
 import Boom from '@hapi/boom'
 import axios from 'axios'
+import LogControl from './logControl'
 
 type GeocodePayload = {
   country: string
@@ -70,6 +71,20 @@ export function calculateDistance(
   const centralAngle = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 
   const distance = EARTH_RADIUS * centralAngle
+
+  if (isNaN(distance)) {
+    const errorText = `Distance could haven't been calculated between these two points:
+
+${JSON.stringify(point1, null, 2)}
+    
+${JSON.stringify(point2, null, 2)}`
+
+    LogControl.createLog(
+      errorText,
+      'distance-error-calculation.txt',
+      'distance'
+    )
+  }
 
   return distance
 }
