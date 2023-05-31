@@ -34,6 +34,8 @@ class ConquistService extends GenericService<ConquistModel> {
 
       const created = await this.create(conquistToCreate)
 
+      await userService.increaseScore(score, data.userId)
+
       return created
     } catch (error) {
       throw Boom.badRequest(String(error))

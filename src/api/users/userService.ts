@@ -25,6 +25,14 @@ class UserService extends GenericService<UserModel> {
       throw Boom.notFound(String(error))
     }
   }
+
+  async increaseScore(score: number, userId: number) {
+    try {
+      await this.Model.increment({ score }, { where: { id: userId } })
+    } catch (error) {
+      throw Boom.badRequest(String(error))
+    }
+  }
 }
 
 export default UserService
