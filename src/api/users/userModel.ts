@@ -12,6 +12,7 @@ import { generateSalt, hashPassword } from '../../utils/crypto'
 import ConquistModel from '../conquists/conquistModel'
 import LeagueModel from '../leagues/leagueModel'
 import InvitationModel from '../invitations/invitationModel'
+import { sortBy } from 'lodash'
 
 const tableName = 'user'
 
@@ -37,10 +38,26 @@ class UserModel extends Model<
   declare conquists?: NonAttribute<ConquistModel[]>
   declare invitations?: NonAttribute<InvitationModel[]>
 
+  // Virtual
+  declare countries?: string[]
+  declare places?: string[]
+
   declare static associations: {
     leagues?: Association<UserModel, LeagueModel>
     conquists?: Association<UserModel, ConquistModel>
     invitations?: Association<UserModel, InvitationModel>
+  }
+
+  getUniqueCountries(field: keyof ConquistModel) {
+    if (!this.conquists) {
+      return []
+    }
+
+    const sortedConquists = sortBy(this.conquists, ['createdAt']).reverse()
+    const allCountries = sortedConquists.map((conquist) => conquist[field])
+    const uniqueCountries = [...new Set(allCountries)]
+
+    return uniqueCountries
   }
 }
 
@@ -87,6 +104,18 @@ UserModel.init(
       type: DataTypes.INTEGER.UNSIGNED,
       defaultValue: 0,
       allowNull: false,
+    },
+    countries: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return this.getUniqueCountries('country')
+      },
+    },
+    places: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return this.getUniqueCountries('place')
+      },
     },
     createdAt: {
       type: DataTypes.DATE,
