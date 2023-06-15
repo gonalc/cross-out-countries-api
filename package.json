@@ -7,7 +7,7 @@
     "test": "jest --verbose  --detectOpenHandles --runInBand --forceExit",
     "dev": "cross-env NODE_ENV=development ts-node-dev --respawn --pretty --transpile-only src/index.ts",
     "build": "rm -rf build/ && tsc",
-    "start": "ts-node src/index.ts",
+    "start": "node build/src/index.js",
     "prestart": "npm run build",
     "prepare": "husky install",
     "lint": "lint-staged"
