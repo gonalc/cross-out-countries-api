@@ -35,9 +35,9 @@ if (
 export const getDialect = (): Dialect => {
   const DEFAULT_DIALECT: Dialect = 'mysql'
 
-  const dialect: Dialect = process.env.DB_CLIENT || DEFAULT_DIALECT
+  const dialect = process.env.DB_CLIENT || DEFAULT_DIALECT
 
-  return dialect
+  return dialect as Dialect
 }
 
 export default connection
