@@ -1,5 +1,18 @@
+import { CreationAttributes } from 'sequelize'
 import GenericService, { IServiceOptions } from '../GenericService'
 import ConquistModel from './conquistModel'
+import Boom from '@hapi/boom'
+import UserService from '../users/userService'
+import { calculateDistance } from '../../utils/geocoding'
+import CountryService from '../countries/countryService'
+
+type AppConquistToCreate = Omit<CreationAttributes<ConquistModel>, 'score'>
+
+const userService = new UserService()
+const countryService = new CountryService()
+
+const MIN_SCORE = 2
+const MAX_DISTANCE = 20_000
 
 const options: IServiceOptions<ConquistModel> = {
   searchFields: ['country', 'place', 'province'],
@@ -8,6 +21,122 @@ const options: IServiceOptions<ConquistModel> = {
 class ConquistService extends GenericService<ConquistModel> {
   constructor() {
     super(ConquistModel, options)
+  }
+
+  async createConquist(data: AppConquistToCreate) {
+    try {
+      const score = await this.scoreCalculator(data)
+
+      const conquistToCreate: CreationAttributes<ConquistModel> = {
+        ...data,
+        score,
+      }
+
+      const created = await this.create(conquistToCreate)
+
+      await userService.increaseScore(score, data.userId)
+
+      return created
+    } catch (error) {
+      throw Boom.badRequest(String(error))
+    }
+  }
+
+  private async scoreCalculator(data: AppConquistToCreate): Promise<number> {
+    const { userId, country, place } = data
+
+    const user = await userService.getSingle(userId, {})
+
+    if (!user) {
+      throw Boom.notFound('User not found when calculating score.')
+    }
+
+    const conquistCountryData = await countryService.getOneByField({
+      where: {
+        code: country,
+      },
+    })
+
+    const conquistPlaceData = await countryService.getOneByField({
+      where: {
+        code: place,
+      },
+    })
+
+    const userCountryData = await countryService.getOneByField({
+      where: {
+        code: user.country,
+      },
+    })
+
+    if (!userCountryData || !conquistCountryData || !conquistPlaceData) {
+      throw Boom.badData('There must be something wrong.')
+    }
+
+    const conquistCountry = conquistCountryData.toJSON()
+    const conquistPlace = conquistPlaceData.toJSON()
+    const userCountry = userCountryData.toJSON()
+
+    const countryDistance = calculateDistance(
+      {
+        latitude: conquistCountry.latitude,
+        longitude: conquistCountry.longitude,
+      },
+      {
+        latitude: userCountry.latitude,
+        longitude: userCountry.longitude,
+      }
+    )
+    const placeDistance = calculateDistance(
+      {
+        latitude: conquistPlace.latitude,
+        longitude: conquistPlace.longitude,
+      },
+      {
+        latitude: userCountry.latitude,
+        longitude: userCountry.longitude,
+      }
+    )
+
+    const countryScore = this.getDistanceScore(countryDistance)
+    const placeScore = this.getDistanceScore(placeDistance)
+    const populationScore = this.getPopulationScore(conquistCountry.population)
+
+    const scores = [countryScore, placeScore, populationScore]
+
+    const finalScore = this.getFinalScore(scores)
+
+    return finalScore
+  }
+
+  private getDistanceScore(distance: number): number {
+    if (isNaN(distance)) {
+      return MIN_SCORE
+    }
+
+    if (distance) {
+      const ratio = (distance / MAX_DISTANCE) * 100
+
+      if (ratio > MIN_SCORE) {
+        return ratio
+      }
+    }
+
+    return MIN_SCORE
+  }
+
+  private getPopulationScore(population: number): number {
+    if (!population || isNaN(population)) {
+      return MIN_SCORE
+    }
+
+    return (1 / population) * 100
+  }
+
+  private getFinalScore(scores: number[]): number {
+    const total = scores.reduce((a, b) => a + b)
+
+    return Math.floor(total)
   }
 }
 

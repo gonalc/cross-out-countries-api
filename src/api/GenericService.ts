@@ -6,6 +6,7 @@ import type {
   Includeable,
   Model,
   ModelStatic,
+  Order,
   UpdateOptions,
   WhereOptions,
 } from 'sequelize'
@@ -20,6 +21,7 @@ export interface IServiceOptions<M extends Model> {
 export interface IFetchOptions {
   include?: Includeable[]
   where?: WhereOptions
+  order?: Order
 }
 
 export interface IFetchPagedOptions extends IFetchOptions, IPagination {}
@@ -63,6 +65,16 @@ class GenericService<M extends Model> {
     }
   }
 
+  async getOneByField(filters: IFetchOptions) {
+    try {
+      const item = await this.Model.findOne(filters)
+
+      return item
+    } catch (error) {
+      throw Boom.badRequest(String(error))
+    }
+  }
+
   async exists(id: number) {
     try {
       const result = await this.Model.findByPk(id)
@@ -79,6 +91,16 @@ class GenericService<M extends Model> {
   ) {
     try {
       const created = await this.Model.create(data, createOptions)
+
+      return created
+    } catch (error) {
+      throw Boom.badRequest(String(error))
+    }
+  }
+
+  async createMany(data: CreationAttributes<M>[]) {
+    try {
+      const created = await this.Model.bulkCreate(data, { validate: true })
 
       return created
     } catch (error) {

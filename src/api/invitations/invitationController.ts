@@ -1,38 +1,40 @@
 import express from 'express'
 import GenericController from '../GenericController'
-import LeagueService from './leagueService'
+import InvitationsService from './invitationService'
 import { StatusCodes } from 'http-status-codes'
 
-const service = new LeagueService()
+const service = new InvitationsService()
 
-class LeagueController extends GenericController<LeagueService> {
+class InvitationController extends GenericController<InvitationsService> {
   constructor() {
     super(service)
   }
 
-  create = async (
+  accept = async (
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) => {
     try {
-      const data = await this.service.createLeague(req.body)
+      const id = parseInt(req.params.id)
 
-      return res.status(StatusCodes.CREATED).json({ data })
+      const data = await this.service.accept(id, req.body)
+
+      return res.status(StatusCodes.OK).json({ data })
     } catch (error) {
       return next(error)
     }
   }
 
-  getByUser = async (
+  invite = async (
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) => {
     try {
-      const userId = parseInt(req.params.userId)
+      const { username, leagueId } = req.body
 
-      const data = await this.service.getLeaguesByUser(userId)
+      const data = await this.service.invite(username, leagueId)
 
       return res.status(StatusCodes.OK).json({ data })
     } catch (error) {
@@ -41,4 +43,4 @@ class LeagueController extends GenericController<LeagueService> {
   }
 }
 
-export default LeagueController
+export default InvitationController

@@ -99,6 +99,20 @@ class GenericController<IService extends InstanceType<typeof GenericService>> {
     }
   }
 
+  createMany = async (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    try {
+      const data = await this.service.createMany(req.body)
+
+      return res.status(StatusCodes.CREATED).json({ data })
+    } catch (error) {
+      return next(error)
+    }
+  }
+
   update = async (
     req: express.Request,
     res: express.Response,

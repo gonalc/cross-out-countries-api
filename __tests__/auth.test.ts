@@ -4,9 +4,7 @@ import { StatusCodes } from 'http-status-codes'
 import db from '../src/db'
 
 import { generateSalt, hashPassword } from '../src/utils/crypto'
-import { CreationAttributes } from 'sequelize'
-import UserModel from '../src/api/users/userModel'
-import LeagueModel from '../src/api/leagues/leagueModel'
+import type { UserCreationAttributes } from '../src/api/users/userTypes'
 
 const NAME = 'Auth'
 const BASE_URL = '/api/auth'
@@ -19,19 +17,16 @@ const WRONG_EMAIL = 'thisemaildoesntexist@database.com'
 
 // Dependencies
 const USERS_URL = '/api/users'
-const LEAGUES_URL = '/api/leagues'
 
-const userItem: CreationAttributes<UserModel> = {
+const userItem: UserCreationAttributes = {
   email: `test_auth+${new Date().getTime()}@email.com`,
+  username: `username_${new Date().getTime()}__auth`,
   password: TEST_PASSWORD,
   name: 'Test user',
   birthdate: new Date('1993/03/21'),
   country: 'spain',
   city: 'Madrid',
-}
-
-const leagueItem: CreationAttributes<LeagueModel> = {
-  name: 'TEST_auth__League',
+  score: 0,
 }
 
 describe('Auth API tests', () => {
@@ -58,12 +53,6 @@ describe('Auth API tests', () => {
   })
 
   it(`Should create the dependencies for the ${NAME}.`, async () => {
-    // League
-    const leagueRes = await request(app).post(LEAGUES_URL).send(leagueItem)
-
-    expect(leagueRes.statusCode).toBe(StatusCodes.CREATED)
-    expect(leagueRes.body.data).toHaveProperty('id')
-
     // User
     const newUser = {
       ...userItem,
@@ -77,11 +66,28 @@ describe('Auth API tests', () => {
     createdUserId = userRes.body.data.id
   })
 
-  it('Should login successfully and get the jwt token', async () => {
+  it('Should login successfully with email and get the jwt token', async () => {
     const url = `${BASE_URL}/login`
 
     const loginData = {
-      email: userItem.email,
+      userKey: userItem.email,
+      password: TEST_PASSWORD,
+    }
+
+    const res = await request(app).post(url).send(loginData)
+
+    const { statusCode, body } = res
+
+    expect(statusCode).toBe(StatusCodes.OK)
+    expect(body.data).toHaveProperty('jwt')
+    expect(body.data).toHaveProperty('user')
+  })
+
+  it('Should login successfully with username and get the jwt token', async () => {
+    const url = `${BASE_URL}/login`
+
+    const loginData = {
+      userKey: userItem.username,
       password: TEST_PASSWORD,
     }
 
@@ -98,7 +104,7 @@ describe('Auth API tests', () => {
     const url = `${BASE_URL}/login`
 
     const loginData = {
-      email: WRONG_EMAIL,
+      userKey: WRONG_EMAIL,
       password: TEST_PASSWORD,
     }
 
@@ -113,7 +119,7 @@ describe('Auth API tests', () => {
     const url = `${BASE_URL}/login`
 
     const loginData = {
-      email: userItem.email,
+      userKey: userItem.email,
       password: WRONG_PASSWORD,
     }
 

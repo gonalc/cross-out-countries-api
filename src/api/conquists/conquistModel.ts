@@ -1,18 +1,17 @@
-import {
-  CreationOptional,
-  DataTypes,
-  InferAttributes,
-  InferCreationAttributes,
-  Model,
-} from 'sequelize'
+import { DataTypes, Model } from 'sequelize'
+import type { CreationOptional } from 'sequelize'
 import sequelize from '../../db'
 import UserModel from '../users/userModel'
+import type {
+  ConquistAttributes,
+  ConquistCreationAttributes,
+} from './conquistTypes'
 
 const tableName = 'conquist'
 
 class ConquistModel extends Model<
-  InferAttributes<ConquistModel>,
-  InferCreationAttributes<ConquistModel>
+  ConquistAttributes,
+  ConquistCreationAttributes
 > {
   declare id: CreationOptional<number>
   declare country: string
@@ -20,6 +19,7 @@ class ConquistModel extends Model<
   declare birthYear: number
   declare place: string
   declare userId: number
+  declare score: number
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
 }
@@ -49,6 +49,11 @@ ConquistModel.init(
     userId: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
+    },
+    score: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+      defaultValue: 0,
     },
     createdAt: {
       type: DataTypes.DATE,

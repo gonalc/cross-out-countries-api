@@ -5,6 +5,7 @@ import { validator, find } from './leagueValidator'
 const router = Router()
 const controller = new LeagueController()
 
+router.get('/from-user/:userId', controller.getByUser)
 router.get('/paged', controller.fetchPaged)
 router.get('/:id', find, controller.fetchSingle)
 router.get('/', controller.fetchAll)

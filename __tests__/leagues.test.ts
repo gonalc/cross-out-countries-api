@@ -1,17 +1,36 @@
 import request from 'supertest'
 import app from '../src/app'
 import { StatusCodes } from 'http-status-codes'
-import { Attributes, CreationAttributes, ModelStatic } from 'sequelize'
+import type { ModelStatic } from 'sequelize'
 import db from '../src/db'
 import LeagueModel from '../src/api/leagues/leagueModel'
+import type {
+  LeagueAttributes,
+  LeagueCreationAttributes,
+} from '../src/api/leagues/leagueTypes'
+import type { UserCreationAttributes } from '../src/api/users/userTypes'
 
 const NAME = 'League'
 const BASE_URL = '/api/leagues'
 
+// Dependencies
+const USERS_URL = '/api/users'
+
 const includedFields = 'players'
 
-const newItem: CreationAttributes<LeagueModel> = {
+const newItem: LeagueCreationAttributes = {
   name: 'TEST__League',
+}
+
+const userItem: UserCreationAttributes = {
+  email: `test_leagues_user+${new Date().getTime()}@email.com`,
+  password: 'Prueba23',
+  username: `username_${new Date().getTime()}__leagues`,
+  name: 'Test user',
+  birthdate: new Date('1993/03/21'),
+  country: 'spain',
+  city: 'Madrid',
+  score: 0,
 }
 
 const UPDATED_FIELD = 'name'
@@ -22,13 +41,35 @@ const PAGINATION_LIMIT = 3
 
 describe('Leagues API endpoints', () => {
   let createdId: number
+  let createdUserId: number
 
   beforeAll(async () => {
     await db.sync()
   })
 
+  it(`Should create the dependencies for the ${NAME}.`, async () => {
+    // User
+    const newUser = {
+      ...userItem,
+    }
+
+    const userRes = await request(app).post(USERS_URL).send(newUser)
+
+    expect(userRes.statusCode).toBe(StatusCodes.CREATED)
+    expect(userRes.body.data).toHaveProperty('id')
+
+    createdUserId = userRes.body.data.id
+  })
+
   it(`Should create a ${NAME} and return the created one.`, async () => {
-    const res = await request(app).post(BASE_URL).send(newItem)
+    const res = await request(app)
+      .post(BASE_URL)
+      .send({
+        ...newItem,
+        user: {
+          id: createdUserId,
+        },
+      })
 
     const { statusCode, body } = res
 
@@ -61,7 +102,7 @@ describe('Leagues API endpoints', () => {
 
     expect(statusCode).toBe(StatusCodes.OK)
 
-    body.data.forEach((result: Attributes<LeagueModel>) => {
+    body.data.forEach((result: LeagueAttributes) => {
       const included = includedFields.split(',')
       included.forEach((field) => {
         expect(result).toHaveProperty(field)
@@ -107,6 +148,20 @@ describe('Leagues API endpoints', () => {
 
     included.forEach((field) => {
       expect(body.data).toHaveProperty(field)
+    })
+  })
+
+  it('Should get all the leagues the given user is involved in.', async () => {
+    const url = `${BASE_URL}/from-user/${createdId}`
+
+    const res = await request(app).get(url)
+
+    const { statusCode, body } = res
+
+    expect(statusCode).toBe(StatusCodes.OK)
+
+    body.data.forEach((item: LeagueAttributes) => {
+      expect(item).toHaveProperty('players')
     })
   })
 
@@ -156,6 +211,18 @@ describe('Leagues API endpoints', () => {
     expect(statusCode).toBe(StatusCodes.OK)
     expect(body.data).toHaveProperty('id')
     expect(body.data.id).toBe(createdId)
+  })
+
+  it(`Should delete the ${NAME} dependencies.`, async () => {
+    const userUrl = `${USERS_URL}/${createdUserId}`
+
+    const res = await request(app).delete(userUrl)
+
+    const { statusCode, body } = res
+
+    expect(statusCode).toBe(StatusCodes.OK)
+    expect(body.data).toHaveProperty('id')
+    expect(body.data.id).toBe(createdUserId)
   })
 
   afterAll(async () => {
