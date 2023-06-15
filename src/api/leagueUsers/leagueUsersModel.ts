@@ -1,19 +1,18 @@
-import {
-  CreationOptional,
-  DataTypes,
-  InferAttributes,
-  InferCreationAttributes,
-  Model,
-} from 'sequelize'
+import { DataTypes, Model } from 'sequelize'
+import type { CreationOptional } from 'sequelize'
 import sequelize from '../../db'
 import LeagueModel from '../leagues/leagueModel'
 import UserModel from '../users/userModel'
+import {
+  LeagueUserAttributes,
+  LeagueUserCreationAttributes,
+} from './leagueUserTypes'
 
 const tableName = 'league_user'
 
 class LeagueUserModel extends Model<
-  InferAttributes<LeagueUserModel>,
-  InferCreationAttributes<LeagueUserModel>
+  LeagueUserAttributes,
+  LeagueUserCreationAttributes
 > {
   declare id: CreationOptional<number>
   declare leagueId: number

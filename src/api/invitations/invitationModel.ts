@@ -1,18 +1,17 @@
-import {
-  CreationOptional,
-  DataTypes,
-  InferAttributes,
-  InferCreationAttributes,
-  Model,
-} from 'sequelize'
+import { DataTypes, Model } from 'sequelize'
+import type { CreationOptional } from 'sequelize'
 import sequelize from '../../db'
 import UserModel from '../users/userModel'
+import {
+  InvitationAttributes,
+  InvitationCreationAttributes,
+} from './invitationTypes'
 
 const tableName = 'invitation'
 
 class InvitationModel extends Model<
-  InferAttributes<InvitationModel>,
-  InferCreationAttributes<InvitationModel>
+  InvitationAttributes,
+  InvitationCreationAttributes
 > {
   declare id: CreationOptional<number>
   declare userId: number

@@ -1,18 +1,14 @@
-import {
-  CreationOptional,
-  DataTypes,
-  InferAttributes,
-  InferCreationAttributes,
-  Model,
-} from 'sequelize'
+import { DataTypes, Model } from 'sequelize'
+import type { CreationOptional } from 'sequelize'
 import sequelize from '../../db'
+import type {
+  CountryAttributes,
+  CountryCreationAttributes,
+} from './countryTypes'
 
 const tableName = 'country'
 
-class CountryModel extends Model<
-  InferAttributes<CountryModel>,
-  InferCreationAttributes<CountryModel>
-> {
+class CountryModel extends Model<CountryAttributes, CountryCreationAttributes> {
   declare id: CreationOptional<number>
   declare code: string
   declare latitude: number

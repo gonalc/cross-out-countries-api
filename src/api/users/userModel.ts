@@ -2,8 +2,6 @@ import {
   Association,
   CreationOptional,
   DataTypes,
-  InferAttributes,
-  InferCreationAttributes,
   Model,
   NonAttribute,
 } from 'sequelize'
@@ -13,13 +11,11 @@ import ConquistModel from '../conquists/conquistModel'
 import LeagueModel from '../leagues/leagueModel'
 import InvitationModel from '../invitations/invitationModel'
 import { sortBy } from 'lodash'
+import type { UserAttributes, UserCreationAttributes } from './userTypes'
 
 const tableName = 'user'
 
-class UserModel extends Model<
-  InferAttributes<UserModel>,
-  InferCreationAttributes<UserModel>
-> {
+class UserModel extends Model<UserAttributes, UserCreationAttributes> {
   declare id: CreationOptional<number>
   declare name: string
   declare username: string

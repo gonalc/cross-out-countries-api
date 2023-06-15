@@ -1,10 +1,14 @@
 import request from 'supertest'
 import app from '../src/app'
 import { StatusCodes } from 'http-status-codes'
-import { Attributes, CreationAttributes, ModelStatic } from 'sequelize'
+import type { ModelStatic } from 'sequelize'
 import db from '../src/db'
 import LeagueModel from '../src/api/leagues/leagueModel'
-import UserModel from '../src/api/users/userModel'
+import type {
+  LeagueAttributes,
+  LeagueCreationAttributes,
+} from '../src/api/leagues/leagueTypes'
+import type { UserCreationAttributes } from '../src/api/users/userTypes'
 
 const NAME = 'League'
 const BASE_URL = '/api/leagues'
@@ -14,11 +18,11 @@ const USERS_URL = '/api/users'
 
 const includedFields = 'players'
 
-const newItem: CreationAttributes<LeagueModel> = {
+const newItem: LeagueCreationAttributes = {
   name: 'TEST__League',
 }
 
-const userItem: CreationAttributes<UserModel> = {
+const userItem: UserCreationAttributes = {
   email: `test_leagues_user+${new Date().getTime()}@email.com`,
   password: 'Prueba23',
   username: `username_${new Date().getTime()}__leagues`,
@@ -98,7 +102,7 @@ describe('Leagues API endpoints', () => {
 
     expect(statusCode).toBe(StatusCodes.OK)
 
-    body.data.forEach((result: Attributes<LeagueModel>) => {
+    body.data.forEach((result: LeagueAttributes) => {
       const included = includedFields.split(',')
       included.forEach((field) => {
         expect(result).toHaveProperty(field)
@@ -156,7 +160,7 @@ describe('Leagues API endpoints', () => {
 
     expect(statusCode).toBe(StatusCodes.OK)
 
-    body.data.forEach((item: Attributes<LeagueModel>) => {
+    body.data.forEach((item: LeagueAttributes) => {
       expect(item).toHaveProperty('players')
     })
   })

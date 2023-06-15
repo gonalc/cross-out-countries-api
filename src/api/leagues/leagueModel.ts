@@ -1,21 +1,12 @@
-import {
-  Association,
-  CreationOptional,
-  DataTypes,
-  InferAttributes,
-  InferCreationAttributes,
-  Model,
-  NonAttribute,
-} from 'sequelize'
+import { Association, DataTypes, Model, NonAttribute } from 'sequelize'
+import type { CreationOptional } from 'sequelize'
 import sequelize from '../../db'
 import UserModel from '../users/userModel'
+import { LeagueAttributes, LeagueCreationAttributes } from './leagueTypes'
 
 const tableName = 'league'
 
-class LeagueModel extends Model<
-  InferAttributes<LeagueModel>,
-  InferCreationAttributes<LeagueModel>
-> {
+class LeagueModel extends Model<LeagueAttributes, LeagueCreationAttributes> {
   declare id: CreationOptional<number>
   declare name: string
   // declare logoId: number // provisional, need to make the images service

@@ -1,11 +1,12 @@
 import request from 'supertest'
 import app from '../src/app'
-import { CreationAttributes, ModelStatic } from 'sequelize'
+import type { ModelStatic } from 'sequelize'
 import db from '../src/db'
-import UserModel from '../src/api/users/userModel'
 import LeagueModel from '../src/api/leagues/leagueModel'
 import { StatusCodes } from 'http-status-codes'
-import InvitationModel from '../src/api/invitations/invitationModel'
+import type { InvitationCreationAttributes } from '../src/api/invitations/invitationTypes'
+import type { UserCreationAttributes } from '../src/api/users/userTypes'
+import type { LeagueCreationAttributes } from '../src/api/leagues/leagueTypes'
 
 const NAME = 'Invitation'
 const BASE_URL = '/api/invitations'
@@ -14,9 +15,9 @@ const BASE_URL = '/api/invitations'
 const USERS_URL = '/api/users'
 const LEAGUES_URL = '/api/leagues'
 
-let newItem: CreationAttributes<InvitationModel>
+let newItem: InvitationCreationAttributes
 
-const userItem: CreationAttributes<UserModel> = {
+const userItem: UserCreationAttributes = {
   email: `test_leagues_user+${new Date().getTime()}@email.com`,
   username: `username_${new Date().getTime()}__invitations`,
   password: 'Prueba23',
@@ -27,7 +28,7 @@ const userItem: CreationAttributes<UserModel> = {
   score: 0,
 }
 
-const leagueItem: CreationAttributes<LeagueModel> = {
+const leagueItem: LeagueCreationAttributes = {
   name: 'TEST__League_invitations',
 }
 

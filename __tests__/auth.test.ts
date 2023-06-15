@@ -4,8 +4,7 @@ import { StatusCodes } from 'http-status-codes'
 import db from '../src/db'
 
 import { generateSalt, hashPassword } from '../src/utils/crypto'
-import { CreationAttributes } from 'sequelize'
-import UserModel from '../src/api/users/userModel'
+import type { UserCreationAttributes } from '../src/api/users/userTypes'
 
 const NAME = 'Auth'
 const BASE_URL = '/api/auth'
@@ -19,7 +18,7 @@ const WRONG_EMAIL = 'thisemaildoesntexist@database.com'
 // Dependencies
 const USERS_URL = '/api/users'
 
-const userItem: CreationAttributes<UserModel> = {
+const userItem: UserCreationAttributes = {
   email: `test_auth+${new Date().getTime()}@email.com`,
   username: `username_${new Date().getTime()}__auth`,
   password: TEST_PASSWORD,

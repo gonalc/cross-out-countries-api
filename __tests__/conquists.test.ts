@@ -1,10 +1,14 @@
 import request from 'supertest'
 import app from '../src/app'
 import { StatusCodes } from 'http-status-codes'
-import { Attributes, CreationAttributes, ModelStatic } from 'sequelize'
+import type { ModelStatic } from 'sequelize'
 import db from '../src/db'
-import ConquistModel from '../src/api/conquists/conquistModel'
 import UserModel from '../src/api/users/userModel'
+import type {
+  ConquistAttributes,
+  ConquistCreationAttributes,
+} from '../src/api/conquists/conquistTypes'
+import type { UserCreationAttributes } from '../src/api/users/userTypes'
 
 const NAME = 'Conquists'
 const BASE_URL = '/api/conquists'
@@ -16,11 +20,11 @@ const baseItem = {
   place: 'IT',
 }
 
-let newItem: Omit<CreationAttributes<ConquistModel>, 'score'>
+let newItem: Omit<ConquistCreationAttributes, 'score'>
 
 // Dependencies
 const USERS_URL = '/api/users'
-const userItem: CreationAttributes<UserModel> = {
+const userItem: UserCreationAttributes = {
   email: `test_conquist+${new Date().getTime()}@email.com`,
   password: 'Prueba23',
   username: `username_${new Date().getTime()}__conquists`,
@@ -31,7 +35,7 @@ const userItem: CreationAttributes<UserModel> = {
   score: 0,
 }
 
-const UPDATED_FIELD: keyof Attributes<ConquistModel> = 'country'
+const UPDATED_FIELD: keyof ConquistAttributes = 'country'
 const UPDATED_VALUE = 'italy'
 
 const PAGINATION_OFFSET = 0

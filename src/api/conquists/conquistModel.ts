@@ -1,18 +1,17 @@
-import {
-  CreationOptional,
-  DataTypes,
-  InferAttributes,
-  InferCreationAttributes,
-  Model,
-} from 'sequelize'
+import { DataTypes, Model } from 'sequelize'
+import type { CreationOptional } from 'sequelize'
 import sequelize from '../../db'
 import UserModel from '../users/userModel'
+import type {
+  ConquistAttributes,
+  ConquistCreationAttributes,
+} from './conquistTypes'
 
 const tableName = 'conquist'
 
 class ConquistModel extends Model<
-  InferAttributes<ConquistModel>,
-  InferCreationAttributes<ConquistModel>
+  ConquistAttributes,
+  ConquistCreationAttributes
 > {
   declare id: CreationOptional<number>
   declare country: string
