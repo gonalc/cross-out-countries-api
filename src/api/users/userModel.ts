@@ -26,6 +26,7 @@ class UserModel extends Model<UserAttributes, UserCreationAttributes> {
   declare password: string
   declare salt: CreationOptional<string>
   declare score: number
+  declare fcmToken: CreationOptional<string>
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
 
@@ -94,6 +95,9 @@ UserModel.init(
       allowNull: false,
     },
     salt: {
+      type: DataTypes.STRING,
+    },
+    fcmToken: {
       type: DataTypes.STRING,
     },
     score: {
