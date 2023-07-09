@@ -11,6 +11,7 @@ export type UserAttributes = {
   password: string
   salt: string
   score: number
+  fcmToken: string
   createdAt: Date
   updatedAt: Date
 
@@ -21,5 +22,11 @@ export type UserAttributes = {
 
 export type UserCreationAttributes = Optional<
   UserAttributes,
-  'id' | 'createdAt' | 'updatedAt' | 'countries' | 'places' | 'salt'
+  | 'id'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'countries'
+  | 'places'
+  | 'salt'
+  | 'fcmToken'
 >

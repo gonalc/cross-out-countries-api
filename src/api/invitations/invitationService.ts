@@ -1,10 +1,15 @@
-import { Attributes } from 'sequelize'
-import GenericService, { IServiceOptions } from '../GenericService'
+import type { Attributes } from 'sequelize'
+import GenericService, { type IServiceOptions } from '../GenericService'
 import InvitationModel from './invitationModel'
 import LeagueUserService from '../leagueUsers/leagueUserService'
 import UserService from '../users/userService'
 import Boom from '@hapi/boom'
 import LeagueService from '../leagues/leagueService'
+import {
+  type BuildMessagePayload,
+  sendMessages,
+  NotificationType,
+} from '../../utils/notifications'
 
 const leagueUserService = new LeagueUserService()
 const leagueService = new LeagueService()
@@ -48,11 +53,23 @@ class InvitationService extends GenericService<InvitationModel> {
         throw Boom.notFound('League not found')
       }
 
+      const leagueName = league.get('name')
+
       const createdInvitation = await this.create({
         leagueId,
         userId: user.id,
-        leagueName: league.get('name'),
+        leagueName,
       })
+
+      const notificationMessage: BuildMessagePayload = {
+        title: 'Invitación a una liga',
+        text: `Te han invitado a la liga ${leagueName}`,
+        token: user.get('fcmToken'),
+        data: createdInvitation.toJSON(),
+        type: NotificationType.INVITATION,
+      }
+
+      await sendMessages([notificationMessage])
 
       return createdInvitation
     } catch (error) {
