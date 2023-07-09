@@ -16,6 +16,7 @@ export const SCHEMA = Joi.object({
   country: Joi.string().max(128),
   city: Joi.string().max(128).allow(null),
   password: Joi.string().max(256),
+  fcmToken: Joi.string().max(255).allow(null),
   score: Joi.number().integer().allow(null),
   createdAt: Joi.date(),
   updatedAt: Joi.date(),
