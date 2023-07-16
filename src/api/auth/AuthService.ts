@@ -1,19 +1,16 @@
 import Boom from '@hapi/boom'
-import { Attributes, CreationAttributes } from 'sequelize'
 import { hashPassword } from '../../utils/crypto'
-import UserModel from '../users/userModel'
 import { signToken, verifyToken } from '../../utils/auth'
 import { omit } from 'lodash'
-import UserService from '../users/userService'
+import UserService, { userFieldsToOmit } from '../users/userService'
+import type { UserAttributes, UserCreationAttributes } from '../users/userTypes'
 
-type TUser = Attributes<UserModel>
-
-type TUserResponse = Omit<TUser, 'salt' | 'password'>
+type TUserResponse = Omit<UserAttributes, 'salt' | 'password'>
 
 export interface ILoginData {
-  email: TUser['email']
+  email: UserAttributes['email']
   password: string
-  user: TUser
+  user: UserAttributes
 }
 
 interface ILoginResponse {
@@ -26,9 +23,9 @@ interface IAuthService {
   _comparePasswords: (
     sourcePassword: string,
     targetPassword: string,
-    salt: TUser['salt']
+    salt: UserAttributes['salt']
   ) => boolean
-  _getToken: (userData: TUser) => string | void
+  _getToken: (userData: UserAttributes) => string | void
 }
 
 const userService = new UserService()
@@ -37,6 +34,7 @@ class AuthService implements IAuthService {
   async login(loginData: ILoginData): Promise<ILoginResponse> {
     const { user } = loginData
     const { password, salt } = user
+
     const passwordValid = this._comparePasswords(
       loginData.password,
       password,
@@ -54,16 +52,14 @@ class AuthService implements IAuthService {
     }
 
     const responseData: ILoginResponse = {
-      user: omit(user, ['salt', 'password']),
+      user: omit(user, userFieldsToOmit),
       jwt,
     }
 
     return responseData
   }
 
-  async signup(
-    userToCreate: CreationAttributes<UserModel>
-  ): Promise<ILoginResponse> {
+  async signup(userToCreate: UserCreationAttributes): Promise<ILoginResponse> {
     const createdUser = await userService.create(userToCreate)
     const user = createdUser.toJSON()
 
@@ -74,7 +70,7 @@ class AuthService implements IAuthService {
     }
 
     const responseData: ILoginResponse = {
-      user: omit(user, ['salt', 'password']),
+      user: omit(user, userFieldsToOmit),
       jwt,
     }
 
@@ -105,7 +101,7 @@ class AuthService implements IAuthService {
     }
 
     const responseData: ILoginResponse = {
-      user: omit(user, ['salt', 'password']),
+      user: omit(user, userFieldsToOmit),
       jwt,
     }
 
@@ -115,14 +111,14 @@ class AuthService implements IAuthService {
   _comparePasswords(
     sourcePassword: string,
     targetPassword: string,
-    salt: TUser['salt']
+    salt: UserAttributes['salt']
   ): boolean {
     const hashSource: string = hashPassword(sourcePassword, salt)
 
     return hashSource === targetPassword
   }
 
-  _getToken(userData: TUser) {
+  _getToken(userData: UserAttributes) {
     const { email, id } = userData
 
     const payload = {

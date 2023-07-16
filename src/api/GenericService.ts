@@ -3,11 +3,12 @@ import type {
   Attributes,
   CreateOptions,
   CreationAttributes,
+  FindAttributeOptions,
+  FindOptions,
   Includeable,
   Model,
   ModelStatic,
   Order,
-  UpdateOptions,
   WhereOptions,
 } from 'sequelize'
 import type { IPagination } from '../utils/pagination'
@@ -16,12 +17,14 @@ type TSchemaField<M extends Model> = keyof Attributes<M>
 
 export interface IServiceOptions<M extends Model> {
   searchFields: TSchemaField<M>[] // Fields that will be used when searching by text.
+  fieldsToOmit?: (keyof Attributes<M>)[]
 }
 
 export interface IFetchOptions {
   include?: Includeable[]
   where?: WhereOptions
   order?: Order
+  attributes?: FindAttributeOptions
 }
 
 export interface IFetchPagedOptions extends IFetchOptions, IPagination {}
@@ -29,13 +32,18 @@ export interface IFetchPagedOptions extends IFetchOptions, IPagination {}
 class GenericService<M extends Model> {
   Model: ModelStatic<M>
   searchFields: TSchemaField<M>[]
+  fieldsToOmit: (keyof Attributes<M>)[]
 
-  constructor(DBModel: ModelStatic<M>, { searchFields }: IServiceOptions<M>) {
+  constructor(
+    DBModel: ModelStatic<M>,
+    { searchFields, fieldsToOmit = [] }: IServiceOptions<M>
+  ) {
     this.Model = DBModel
     this.searchFields = searchFields
+    this.fieldsToOmit = fieldsToOmit
   }
 
-  async getAll(options: IFetchOptions) {
+  async getAll(options: FindOptions<Attributes<M>>) {
     try {
       const items = this.Model.findAll(options)
 
@@ -110,7 +118,7 @@ class GenericService<M extends Model> {
 
   async update(
     id: Attributes<M>['id'],
-    data: UpdateOptions<Attributes<M>>,
+    data: Partial<Attributes<M>>,
     options: IFetchOptions
   ) {
     try {
