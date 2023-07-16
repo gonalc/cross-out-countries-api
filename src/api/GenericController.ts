@@ -3,9 +3,10 @@ import { StatusCodes } from 'http-status-codes'
 import { getPaginationData, IPagination } from '../utils/pagination'
 import { getPopulatedFields, getQueryFilters } from '../utils/query'
 import GenericService, {
-  IFetchOptions,
-  IFetchPagedOptions,
+  type IFetchOptions,
+  type IFetchPagedOptions,
 } from './GenericService'
+import type { FindOptions } from 'sequelize'
 
 class GenericController<IService extends InstanceType<typeof GenericService>> {
   service: IService
@@ -24,9 +25,15 @@ class GenericController<IService extends InstanceType<typeof GenericService>> {
 
       const filters = getQueryFilters(req)
 
-      const options: IFetchOptions = {
+      const options: FindOptions = {
         include,
         where: filters,
+      }
+
+      if (this.service.fieldsToOmit?.length) {
+        options.attributes = {
+          exclude: this.service.fieldsToOmit as string[],
+        }
       }
 
       const data = await this.service.getAll(options)
@@ -55,6 +62,12 @@ class GenericController<IService extends InstanceType<typeof GenericService>> {
         where: filters,
       }
 
+      if (this.service.fieldsToOmit?.length) {
+        options.attributes = {
+          exclude: this.service.fieldsToOmit as string[],
+        }
+      }
+
       const data = await this.service.getPaged(options)
 
       return res.status(StatusCodes.OK).json({ data })
@@ -73,6 +86,12 @@ class GenericController<IService extends InstanceType<typeof GenericService>> {
 
       const options: IFetchOptions = {
         include,
+      }
+
+      if (this.service.fieldsToOmit?.length) {
+        options.attributes = {
+          exclude: this.service.fieldsToOmit as string[],
+        }
       }
 
       const id = parseInt(req.params.id)
@@ -123,6 +142,12 @@ class GenericController<IService extends InstanceType<typeof GenericService>> {
 
       const options: IFetchOptions = {
         include,
+      }
+
+      if (this.service.fieldsToOmit?.length) {
+        options.attributes = {
+          exclude: this.service.fieldsToOmit as string[],
+        }
       }
 
       const id = parseInt(req.params.id)

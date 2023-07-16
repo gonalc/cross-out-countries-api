@@ -30,3 +30,5 @@ export type UserCreationAttributes = Optional<
   | 'salt'
   | 'fcmToken'
 >
+
+export type UserResponse = Omit<UserAttributes, 'salt' | 'password'>

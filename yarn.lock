@@ -1986,7 +1986,7 @@ expect@^29.0.0, expect@^29.0.3:
     jest-message-util "^29.0.3"
     jest-util "^29.0.3"
 
-expo-server-sdk@^3.7.0:
+expo-server-sdk@3.7.0:
   version "3.7.0"
   resolved "https://registry.yarnpkg.com/expo-server-sdk/-/expo-server-sdk-3.7.0.tgz#65249f8d4a7797507cc884d61222c3c5a3863127"
   integrity sha512-SMZuBiIWejAdMMIOTjGQlprcwvSyLfeUQlooyGB5q6GvZ8zHjp+if8Q4k7xczUBTqIqTzs5IvTZnTiqA9Oe9WA==

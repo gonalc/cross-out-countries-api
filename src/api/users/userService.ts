@@ -1,10 +1,17 @@
 import UserModel from './userModel'
-import GenericService, { IServiceOptions } from '../GenericService'
-import { Attributes } from 'sequelize'
+import GenericService, {
+  type IFetchOptions,
+  type IServiceOptions,
+} from '../GenericService'
 import Boom from '@hapi/boom'
+import type { UserAttributes } from './userTypes'
+import { hashPassword } from '../../utils/crypto'
+
+export const userFieldsToOmit = ['salt', 'password'] as const
 
 const options: IServiceOptions<UserModel> = {
   searchFields: ['email'],
+  fieldsToOmit: ['salt', 'password'],
 }
 
 class UserService extends GenericService<UserModel> {
@@ -12,17 +19,47 @@ class UserService extends GenericService<UserModel> {
     super(UserModel, options)
   }
 
-  async getByEmail(email: Attributes<UserModel>['email']) {
+  async updateUser(
+    id: UserAttributes['id'],
+    data: Partial<UserAttributes>,
+    findOptions: IFetchOptions
+  ) {
     try {
-      const user = await this.Model.findOne({
-        where: {
-          email,
-        },
-      })
+      let dataToUpdate: Partial<UserAttributes> = { ...data }
 
-      return user
+      if (dataToUpdate.password) {
+        // Check if password is new
+        // Update if needed
+        const user = await this.getSingle(id, {
+          attributes: ['salt', 'password'],
+        })
+
+        if (!user) {
+          return null
+        }
+
+        const newHashedPassword = hashPassword(
+          dataToUpdate.password,
+          user.get('salt')
+        )
+
+        const passwordHasChanged = newHashedPassword !== user.get('password')
+
+        if (passwordHasChanged) {
+          dataToUpdate = {
+            ...dataToUpdate,
+            password: newHashedPassword,
+          }
+        } else {
+          delete dataToUpdate.password
+        }
+      }
+
+      const updatedUser = await this.update(id, dataToUpdate, findOptions)
+
+      return updatedUser
     } catch (error) {
-      throw Boom.notFound(String(error))
+      throw Boom.badRequest(String(error))
     }
   }
 

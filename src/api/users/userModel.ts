@@ -139,16 +139,6 @@ UserModel.init(
         user.salt = salt
         user.password = hashedPassword
       },
-      beforeUpdate: (user) => {
-        const salt = user.get('salt')
-        const newPassword = user.getDataValue('password')
-
-        const passwordHash = hashPassword(newPassword, salt)
-
-        if (passwordHash !== user.previous('password')) {
-          user.password = passwordHash
-        }
-      },
     },
   }
 )
