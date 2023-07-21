@@ -3,6 +3,7 @@ import logger from './logger'
 
 export enum NotificationType {
   INVITATION = 'invitation',
+  CONQUIST = 'conquist',
 }
 
 export type BuildMessagePayload = {
