@@ -1,15 +1,23 @@
-import { CreationAttributes } from 'sequelize'
+import { CreationAttributes, Op } from 'sequelize'
 import GenericService, { IServiceOptions } from '../GenericService'
 import ConquistModel from './conquistModel'
 import Boom from '@hapi/boom'
 import UserService from '../users/userService'
 import { calculateDistance } from '../../utils/geocoding'
 import CountryService from '../countries/countryService'
+import LeagueService from '../leagues/leagueService'
+import LeagueModel from '../leagues/leagueModel'
+import {
+  BuildMessagePayload,
+  NotificationType,
+  sendMessages,
+} from '../../utils/notifications'
 
 type AppConquistToCreate = Omit<CreationAttributes<ConquistModel>, 'score'>
 
 const userService = new UserService()
 const countryService = new CountryService()
+const leagueService = new LeagueService()
 
 const MIN_SCORE = 2
 const MAX_DISTANCE = 20_000
@@ -36,7 +44,68 @@ class ConquistService extends GenericService<ConquistModel> {
 
       await userService.increaseScore(score, data.userId)
 
+      // Send notifications to everyone who share League with the conquerer
+      await this.sendNotifications(data.userId, data.country)
+
       return created
+    } catch (error) {
+      throw Boom.badRequest(String(error))
+    }
+  }
+
+  private async sendNotifications(userId: number, country: string) {
+    try {
+      const recipients = await this.getNotificationRecipients(userId)
+
+      const conquererUser = await userService.getSingle(userId, {
+        attributes: ['name'],
+      })
+
+      const baseMessage: Omit<BuildMessagePayload, 'token'> = {
+        title: '¡Nueva conquista!',
+        text: `${conquererUser?.get('name')} ha conquistado ${country}`,
+        type: NotificationType.CONQUIST,
+      }
+
+      const messages: BuildMessagePayload[] = recipients.map((token) => {
+        const message: BuildMessagePayload = {
+          ...baseMessage,
+          token,
+        }
+
+        return message
+      })
+
+      await sendMessages(messages)
+    } catch (error) {
+      throw Boom.badRequest(String(error))
+    }
+  }
+
+  private async getNotificationRecipients(userId: number) {
+    try {
+      const userLeagues = await leagueService.getLeaguesByUser(userId)
+      const leaguesIds = userLeagues.map((league) => league.id)
+
+      const recipients = await userService.getAll({
+        include: [
+          {
+            model: LeagueModel,
+            through: { attributes: [] },
+            as: 'leagues',
+            where: {
+              id: {
+                [Op.in]: leaguesIds,
+              },
+            },
+          },
+        ],
+        attributes: ['fcmToken'],
+      })
+
+      return recipients
+        .map((recipient) => recipient.get('fcmToken'))
+        .filter(Boolean)
     } catch (error) {
       throw Boom.badRequest(String(error))
     }
