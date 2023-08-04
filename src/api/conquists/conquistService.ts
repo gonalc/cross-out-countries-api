@@ -1,5 +1,5 @@
 import { CreationAttributes, Op } from 'sequelize'
-import GenericService, { IServiceOptions } from '../GenericService'
+import GenericService, { type IServiceOptions } from '../GenericService'
 import ConquistModel from './conquistModel'
 import Boom from '@hapi/boom'
 import UserService from '../users/userService'

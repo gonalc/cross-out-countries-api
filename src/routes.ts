@@ -6,6 +6,7 @@ import leagueUserRoutes from './api/leagueUsers/leagueUserRoutes'
 import conquistRoutes from './api/conquists/conquistRoutes'
 import invitationsRoutes from './api/invitations/invitationRoutes'
 import countryRoutes from './api/countries/countryRoutes'
+import badgeRoutes from './api/badges/badgeRoutes'
 
 const router = Router()
 
@@ -20,6 +21,7 @@ router.get('/', (req, res) => {
 
 router.use('/auth', authRoutes)
 router.use('/users', userRoutes)
+router.use('/badges', badgeRoutes)
 router.use('/leagues', leagueRoutes)
 router.use('/countries', countryRoutes)
 router.use('/players', leagueUserRoutes)
