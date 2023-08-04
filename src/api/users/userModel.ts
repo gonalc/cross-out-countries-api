@@ -12,6 +12,7 @@ import LeagueModel from '../leagues/leagueModel'
 import InvitationModel from '../invitations/invitationModel'
 import { sortBy } from 'lodash'
 import type { UserAttributes, UserCreationAttributes } from './userTypes'
+import BadgeModel from '../badges/badgeModel'
 
 const tableName = 'user'
 
@@ -31,6 +32,7 @@ class UserModel extends Model<UserAttributes, UserCreationAttributes> {
   declare updatedAt: CreationOptional<Date>
 
   // Associations
+  declare badges?: NonAttribute<BadgeModel[]>
   declare leagues?: NonAttribute<LeagueModel[]>
   declare conquists?: NonAttribute<ConquistModel[]>
   declare invitations?: NonAttribute<InvitationModel[]>
@@ -40,6 +42,7 @@ class UserModel extends Model<UserAttributes, UserCreationAttributes> {
   declare places?: string[]
 
   declare static associations: {
+    badges?: Association<UserModel, BadgeModel>
     leagues?: Association<UserModel, LeagueModel>
     conquists?: Association<UserModel, ConquistModel>
     invitations?: Association<UserModel, InvitationModel>

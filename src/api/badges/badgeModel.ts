@@ -1,7 +1,13 @@
-import { DataTypes, Model } from 'sequelize'
-import type { CreationOptional } from 'sequelize'
+import {
+  DataTypes,
+  Model,
+  Association,
+  type NonAttribute,
+  type CreationOptional,
+} from 'sequelize'
 import sequelize from '../../db'
 import type { BadgeAttributes, BadgeCreationAttributes } from './badgeTypes'
+import UserModel from '../users/userModel'
 
 const tableName = 'badge'
 
@@ -12,6 +18,12 @@ class BadgeModel extends Model<BadgeAttributes, BadgeCreationAttributes> {
   declare iconFamily: string
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
+
+  // Associations
+  declare players?: NonAttribute<UserModel[]>
+  declare static associations: {
+    players?: Association<BadgeModel, UserModel>
+  }
 }
 
 BadgeModel.init(
