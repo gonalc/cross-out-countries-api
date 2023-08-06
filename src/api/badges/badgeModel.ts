@@ -16,6 +16,7 @@ class BadgeModel extends Model<BadgeAttributes, BadgeCreationAttributes> {
   declare name: string
   declare iconKey: string
   declare iconFamily: string
+  declare color: string
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
 
@@ -44,6 +45,11 @@ BadgeModel.init(
     iconFamily: {
       type: DataTypes.STRING(128),
       allowNull: false,
+    },
+    color: {
+      type: DataTypes.STRING(128),
+      allowNull: false,
+      defaultValue: 'bronze',
     },
     createdAt: {
       type: DataTypes.DATE,
