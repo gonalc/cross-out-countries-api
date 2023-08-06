@@ -1,9 +1,11 @@
 import {
   Association,
-  CreationOptional,
+  type BelongsToManyAddAssociationMixin,
+  type CreationOptional,
   DataTypes,
   Model,
-  NonAttribute,
+  type NonAttribute,
+  BelongsToManySetAssociationsMixin,
 } from 'sequelize'
 import sequelize from '../../db'
 import { generateSalt, hashPassword } from '../../utils/crypto'
@@ -30,6 +32,16 @@ class UserModel extends Model<UserAttributes, UserCreationAttributes> {
   declare fcmToken: CreationOptional<string>
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
+
+  // Mixins
+  declare addBadge: BelongsToManyAddAssociationMixin<
+    BadgeModel,
+    BadgeModel['id']
+  >
+  declare setBadges: BelongsToManySetAssociationsMixin<
+    BadgeModel,
+    BadgeModel['id']
+  >
 
   // Associations
   declare badges?: NonAttribute<BadgeModel[]>

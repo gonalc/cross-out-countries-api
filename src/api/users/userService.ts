@@ -6,6 +6,10 @@ import GenericService, {
 import Boom from '@hapi/boom'
 import type { UserAttributes } from './userTypes'
 import { hashPassword } from '../../utils/crypto'
+import BadgeModel from '../badges/badgeModel'
+import BadgeService from '../badges/badgeService'
+
+const badgeService = new BadgeService()
 
 export const userFieldsToOmit = ['salt', 'password'] as const
 
@@ -66,6 +70,28 @@ class UserService extends GenericService<UserModel> {
   async increaseScore(score: number, userId: number) {
     try {
       await this.Model.increment({ score }, { where: { id: userId } })
+    } catch (error) {
+      throw Boom.badRequest(String(error))
+    }
+  }
+
+  async addBadge(userId: UserModel['id'], badgeId: BadgeModel['id']) {
+    try {
+      const user = await this.getSingle(userId, {})
+
+      if (!user) {
+        throw Boom.notFound('There is no user found')
+      }
+
+      const badge = await badgeService.getSingle(badgeId, {})
+
+      if (!badge) {
+        throw Boom.notFound('There is no badge found')
+      }
+
+      const res = await user.addBadge(badge, { through: { userId, badgeId } })
+
+      return res
     } catch (error) {
       throw Boom.badRequest(String(error))
     }
