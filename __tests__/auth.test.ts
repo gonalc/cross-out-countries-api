@@ -31,6 +31,7 @@ const userItem: UserCreationAttributes = {
 
 describe('Auth API tests', () => {
   let createdUserId: number
+  let referredUserId: number
 
   beforeAll(async () => {
     await db.sync()
@@ -130,16 +131,54 @@ describe('Auth API tests', () => {
     expect(statusCode).toBe(StatusCodes.UNAUTHORIZED)
   })
 
-  it(`Should delete the ${NAME} dependencies.`, async () => {
-    const userUrl = `${USERS_URL}/${createdUserId}`
+  it('Should create a user with a referred link and increase the referral column', async () => {
+    const url = `${BASE_URL}/signup?referral=${userItem.username}`
+    const referrerUrl = `${USERS_URL}/${createdUserId}`
 
-    const res = await request(app).delete(userUrl)
+    const referredUser = {
+      ...userItem,
+      email: `referred_${userItem.email}`,
+      username: `referred_${userItem.username}`,
+      name: `referred_${userItem.name}`,
+    }
+
+    const res = await request(app).post(url).send(referredUser)
+    const referrerRes = await request(app).get(referrerUrl)
 
     const { statusCode, body } = res
+    const { statusCode: referrerStatusCode, body: referrerBody } = referrerRes
+
+    referredUserId = body.data.user.id
+
+    expect(statusCode).toBe(StatusCodes.OK)
+    expect(body.data).toBeDefined()
+    expect(body.data).toHaveProperty('user')
+    expect(body.data.user).toHaveProperty('id')
+
+    expect(referrerStatusCode).toBe(StatusCodes.OK)
+    expect(referrerBody.data).toBeDefined()
+    expect(referrerBody.data).toHaveProperty('id')
+    expect(referrerBody.data).toHaveProperty('referredUsers')
+    expect(referrerBody.data.referredUsers).toBe(1)
+  })
+
+  it(`Should delete the ${NAME} dependencies.`, async () => {
+    const userUrl = `${USERS_URL}/${createdUserId}`
+    const referralUrl = `${USERS_URL}/${referredUserId}`
+
+    const res = await request(app).delete(userUrl)
+    const referralRes = await request(app).delete(referralUrl)
+
+    const { statusCode, body } = res
+    const { statusCode: referralStatusCode, body: referralBody } = referralRes
 
     expect(statusCode).toBe(StatusCodes.OK)
     expect(body.data).toHaveProperty('id')
     expect(body.data.id).toBe(createdUserId)
+
+    expect(referralStatusCode).toBe(StatusCodes.OK)
+    expect(referralBody.data).toHaveProperty('id')
+    expect(referralBody.data.id).toBe(referredUserId)
   })
 
   afterAll(async () => {

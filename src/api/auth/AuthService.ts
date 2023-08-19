@@ -26,6 +26,7 @@ interface IAuthService {
     salt: UserAttributes['salt']
   ) => boolean
   _getToken: (userData: UserAttributes) => string | void
+  _checkReferral: (referral: string) => void
 }
 
 const userService = new UserService()
@@ -59,9 +60,16 @@ class AuthService implements IAuthService {
     return responseData
   }
 
-  async signup(userToCreate: UserCreationAttributes): Promise<ILoginResponse> {
+  async signup(
+    userToCreate: UserCreationAttributes,
+    referral?: string
+  ): Promise<ILoginResponse> {
     const createdUser = await userService.create(userToCreate)
     const user = createdUser.toJSON()
+
+    if (referral) {
+      await this._checkReferral(referral)
+    }
 
     const jwt = this._getToken(user)
 
@@ -129,6 +137,20 @@ class AuthService implements IAuthService {
     const token = signToken(payload)
 
     return token
+  }
+
+  async _checkReferral(referral: string) {
+    try {
+      const referred = await userService.getOneByField({
+        where: { username: referral },
+      })
+
+      if (referred) {
+        await referred.increment('referredUsers')
+      }
+    } catch (error) {
+      throw Boom.badRequest(`Error checking referral: ${String(error)}`)
+    }
   }
 }
 
