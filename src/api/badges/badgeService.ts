@@ -3,6 +3,8 @@ import GenericService, { type IServiceOptions } from '../GenericService'
 import BadgeModel from './badgeModel'
 import UserService from '../users/userService'
 
+type BadgesHash = Map<number, BadgeModel['name']>
+
 const options: IServiceOptions<BadgeModel> = {
   searchFields: ['name'],
 }
@@ -12,10 +14,10 @@ class BadgeService extends GenericService<BadgeModel> {
     super(BadgeModel, options)
   }
 
-  private getReferralBadgeHash(): Map<number, BadgeModel['name']> {
+  private getReferralBadgeHash(): BadgesHash {
     const referralAmountRewards = [1, 5, 10]
 
-    const badgesHash: Map<number, BadgeModel['name']> = new Map()
+    const badgesHash: BadgesHash = new Map()
 
     referralAmountRewards.forEach((rewardedAmount) => {
       badgesHash.set(rewardedAmount, `share-app-${rewardedAmount}`)
