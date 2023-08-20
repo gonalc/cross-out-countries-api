@@ -12,11 +12,17 @@ class BadgeService extends GenericService<BadgeModel> {
     super(BadgeModel, options)
   }
 
-  private referralBadgeHash: Map<number, BadgeModel['name']> = new Map([
-    [1, 'share-app-1'],
-    [5, 'share-app-5'],
-    [10, 'share-app-10'],
-  ])
+  private getReferralBadgeHash(): Map<number, BadgeModel['name']> {
+    const referralAmountRewards = [1, 5, 10]
+
+    const badgesHash: Map<number, BadgeModel['name']> = new Map()
+
+    referralAmountRewards.forEach((rewardedAmount) => {
+      badgesHash.set(rewardedAmount, `share-app-${rewardedAmount}`)
+    })
+
+    return badgesHash
+  }
 
   async checkReferralBadge(userId: number) {
     try {
@@ -27,7 +33,9 @@ class BadgeService extends GenericService<BadgeModel> {
       if (user) {
         const { referredUsers } = user
 
-        const earnedBadge = this.referralBadgeHash.get(referredUsers)
+        const badgesHash = this.getReferralBadgeHash()
+
+        const earnedBadge = badgesHash.get(referredUsers)
 
         if (earnedBadge) {
           const badge = await this.getOneByField({
