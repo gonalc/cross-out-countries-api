@@ -67,9 +67,7 @@ class AuthService implements IAuthService {
     const createdUser = await userService.create(userToCreate)
     const user = createdUser.toJSON()
 
-    if (referral) {
-      await this._checkReferral(referral)
-    }
+    await this._checkReferral(referral)
 
     const jwt = this._getToken(user)
 
@@ -139,17 +137,19 @@ class AuthService implements IAuthService {
     return token
   }
 
-  async _checkReferral(referral: string) {
-    try {
-      const referred = await userService.getOneByField({
-        where: { username: referral },
-      })
+  async _checkReferral(referral?: string) {
+    if (referral) {
+      try {
+        const referred = await userService.getOneByField({
+          where: { username: referral },
+        })
 
-      if (referred) {
-        await referred.increment('referredUsers')
+        if (referred) {
+          await referred.increment('referredUsers')
+        }
+      } catch (error) {
+        throw Boom.badRequest(`Error checking referral: ${String(error)}`)
       }
-    } catch (error) {
-      throw Boom.badRequest(`Error checking referral: ${String(error)}`)
     }
   }
 }
