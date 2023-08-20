@@ -4,6 +4,7 @@ import { signToken, verifyToken } from '../../utils/auth'
 import { omit } from 'lodash'
 import UserService, { userFieldsToOmit } from '../users/userService'
 import type { UserAttributes, UserCreationAttributes } from '../users/userTypes'
+import BadgeService from '../badges/badgeService'
 
 type TUserResponse = Omit<UserAttributes, 'salt' | 'password'>
 
@@ -30,6 +31,7 @@ interface IAuthService {
 }
 
 const userService = new UserService()
+const badgeService = new BadgeService()
 
 class AuthService implements IAuthService {
   async login(loginData: ILoginData): Promise<ILoginResponse> {
@@ -146,6 +148,8 @@ class AuthService implements IAuthService {
 
         if (referred) {
           await referred.increment('referredUsers')
+
+          await badgeService.checkReferralBadge(referred.id)
         }
       } catch (error) {
         throw Boom.badRequest(`Error checking referral: ${String(error)}`)
