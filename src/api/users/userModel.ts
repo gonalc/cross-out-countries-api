@@ -1,9 +1,11 @@
 import {
   Association,
-  CreationOptional,
+  type BelongsToManyAddAssociationMixin,
+  type CreationOptional,
   DataTypes,
   Model,
-  NonAttribute,
+  type NonAttribute,
+  BelongsToManySetAssociationsMixin,
 } from 'sequelize'
 import sequelize from '../../db'
 import { generateSalt, hashPassword } from '../../utils/crypto'
@@ -12,6 +14,7 @@ import LeagueModel from '../leagues/leagueModel'
 import InvitationModel from '../invitations/invitationModel'
 import { sortBy } from 'lodash'
 import type { UserAttributes, UserCreationAttributes } from './userTypes'
+import BadgeModel from '../badges/badgeModel'
 
 const tableName = 'user'
 
@@ -27,10 +30,22 @@ class UserModel extends Model<UserAttributes, UserCreationAttributes> {
   declare salt: CreationOptional<string>
   declare score: number
   declare fcmToken: CreationOptional<string>
+  declare referredUsers: CreationOptional<number>
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
 
+  // Mixins
+  declare addBadge: BelongsToManyAddAssociationMixin<
+    BadgeModel,
+    BadgeModel['id']
+  >
+  declare setBadges: BelongsToManySetAssociationsMixin<
+    BadgeModel,
+    BadgeModel['id']
+  >
+
   // Associations
+  declare badges?: NonAttribute<BadgeModel[]>
   declare leagues?: NonAttribute<LeagueModel[]>
   declare conquists?: NonAttribute<ConquistModel[]>
   declare invitations?: NonAttribute<InvitationModel[]>
@@ -40,6 +55,7 @@ class UserModel extends Model<UserAttributes, UserCreationAttributes> {
   declare places?: string[]
 
   declare static associations: {
+    badges?: Association<UserModel, BadgeModel>
     leagues?: Association<UserModel, LeagueModel>
     conquists?: Association<UserModel, ConquistModel>
     invitations?: Association<UserModel, InvitationModel>
@@ -99,6 +115,10 @@ UserModel.init(
     },
     fcmToken: {
       type: DataTypes.STRING,
+    },
+    referredUsers: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      defaultValue: 0,
     },
     score: {
       type: DataTypes.INTEGER.UNSIGNED,

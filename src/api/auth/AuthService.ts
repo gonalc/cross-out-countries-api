@@ -4,6 +4,7 @@ import { signToken, verifyToken } from '../../utils/auth'
 import { omit } from 'lodash'
 import UserService, { userFieldsToOmit } from '../users/userService'
 import type { UserAttributes, UserCreationAttributes } from '../users/userTypes'
+import BadgeService from '../badges/badgeService'
 
 type TUserResponse = Omit<UserAttributes, 'salt' | 'password'>
 
@@ -26,9 +27,11 @@ interface IAuthService {
     salt: UserAttributes['salt']
   ) => boolean
   _getToken: (userData: UserAttributes) => string | void
+  _checkReferral: (referral: string) => void
 }
 
 const userService = new UserService()
+const badgeService = new BadgeService()
 
 class AuthService implements IAuthService {
   async login(loginData: ILoginData): Promise<ILoginResponse> {
@@ -59,9 +62,14 @@ class AuthService implements IAuthService {
     return responseData
   }
 
-  async signup(userToCreate: UserCreationAttributes): Promise<ILoginResponse> {
+  async signup(
+    userToCreate: UserCreationAttributes,
+    referral?: string
+  ): Promise<ILoginResponse> {
     const createdUser = await userService.create(userToCreate)
     const user = createdUser.toJSON()
+
+    await this._checkReferral(referral)
 
     const jwt = this._getToken(user)
 
@@ -129,6 +137,24 @@ class AuthService implements IAuthService {
     const token = signToken(payload)
 
     return token
+  }
+
+  async _checkReferral(referral?: string) {
+    if (referral) {
+      try {
+        const referred = await userService.getOneByField({
+          where: { username: referral },
+        })
+
+        if (referred) {
+          await referred.increment('referredUsers')
+
+          await badgeService.checkReferralBadge(referred.id)
+        }
+      } catch (error) {
+        throw Boom.badRequest(`Error checking referral: ${String(error)}`)
+      }
+    }
   }
 }
 
