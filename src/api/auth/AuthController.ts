@@ -25,7 +25,12 @@ class AuthController {
     next: express.NextFunction
   ) => {
     try {
-      const data = await service.signup(req.body)
+      const { referral } = req.query
+
+      const data = await service.signup(
+        req.body,
+        referral as string | undefined
+      )
 
       return res.status(StatusCodes.OK).json({ data })
     } catch (error) {

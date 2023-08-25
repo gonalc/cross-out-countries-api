@@ -30,6 +30,7 @@ class UserModel extends Model<UserAttributes, UserCreationAttributes> {
   declare salt: CreationOptional<string>
   declare score: number
   declare fcmToken: CreationOptional<string>
+  declare referredUsers: CreationOptional<number>
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
 
@@ -114,6 +115,10 @@ UserModel.init(
     },
     fcmToken: {
       type: DataTypes.STRING,
+    },
+    referredUsers: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      defaultValue: 0,
     },
     score: {
       type: DataTypes.INTEGER.UNSIGNED,

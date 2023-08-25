@@ -12,6 +12,7 @@ export type UserAttributes = {
   salt: string
   score: number
   fcmToken: string
+  referredUsers: number
   createdAt: Date
   updatedAt: Date
 
@@ -29,6 +30,7 @@ export type UserCreationAttributes = Optional<
   | 'places'
   | 'salt'
   | 'fcmToken'
+  | 'referredUsers'
 >
 
 export type UserResponse = Omit<UserAttributes, 'salt' | 'password'>
