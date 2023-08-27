@@ -14,6 +14,7 @@ import {
   genericErrorHandler,
   methodNotAllowedError,
 } from './middlewares/errorHandling'
+import auth from './middlewares/auth'
 
 const app = express()
 
@@ -31,6 +32,7 @@ app.use(morgan('tiny', { stream: logStream }))
 app.use(bodyParser.json({ limit: '50mb' }))
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
 app.use(json)
+app.use(auth)
 
 app.use('/api', routes)
 
