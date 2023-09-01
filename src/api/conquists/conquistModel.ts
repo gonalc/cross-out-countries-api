@@ -16,7 +16,7 @@ class ConquistModel extends Model<
   declare id: CreationOptional<number>
   declare country: string
   declare province: CreationOptional<string>
-  declare birthYear: number
+  declare birthYear?: number | null
   declare place: string
   declare userId: number
   declare score: number
@@ -40,7 +40,7 @@ ConquistModel.init(
     },
     birthYear: {
       type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
+      allowNull: true,
     },
     place: {
       type: DataTypes.STRING(128),
