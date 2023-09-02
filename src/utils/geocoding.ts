@@ -7,7 +7,7 @@ type GeocodePayload = {
   city?: string
 }
 
-type Coordinates = {
+export type Coordinates = {
   latitude: number
   longitude: number
 }
@@ -57,16 +57,18 @@ export function calculateDistance(
   point2: Coordinates
 ): number {
   const EARTH_RADIUS = 6371
+  const { latitude: lat1, longitude: lng1 } = point1
+  const { latitude: lat2, longitude: lng2 } = point2
 
-  const deltaLatitude = toRadians(point2.latitude - point1.latitude)
-  const deltaLongitude = toRadians(point2.longitude - point1.longitude)
+  const deltaLatitude = toRadians(lat2 - lat1)
+  const deltaLongitude = toRadians(lng2 - lng1)
 
   const a =
     Math.sin(deltaLatitude / 2) * Math.sin(deltaLatitude / 2) +
-    Math.cos(toRadians(point1.latitude)) *
-      Math.cos(toRadians(point2.latitude)) *
+    Math.cos(toRadians(lat1)) *
+      Math.cos(toRadians(lat2)) *
       Math.sin(deltaLongitude / 2) *
-      Math.sin(deltaLongitude * 2)
+      Math.sin(deltaLongitude / 2)
 
   const centralAngle = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 
