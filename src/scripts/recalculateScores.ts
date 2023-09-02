@@ -33,7 +33,7 @@ async function recalculateUsersScore() {
   }
 }
 
-async function recalculateScores() {
+export async function recalculateScores() {
   try {
     const conquists = await conquistService.getAll({})
 
@@ -46,9 +46,14 @@ async function recalculateScores() {
     await recalculateUsersScore()
 
     logger.info('Score recalculated successfully')
-    process.exit(0)
+
+    if (process.env.NODE_ENV === 'scripts') {
+      process.exit(0)
+    }
   } catch (error) {
-    process.exit(1)
+    if (process.env.NODE_ENV === 'scripts') {
+      process.exit(0)
+    }
   }
 }
 
