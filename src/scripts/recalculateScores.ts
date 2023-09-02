@@ -1,9 +1,9 @@
-import './env'
-import './db'
+import '../env'
+import '../db'
 
-import ConquistService from './api/conquists/conquistService'
-import UserService from './api/users/userService'
-import logger from './utils/logger'
+import ConquistService from '../api/conquists/conquistService'
+import UserService from '../api/users/userService'
+import logger from '../utils/logger'
 
 const conquistService = new ConquistService()
 const userService = new UserService()
