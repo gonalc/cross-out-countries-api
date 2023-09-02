@@ -111,7 +111,7 @@ class ConquistService extends GenericService<ConquistModel> {
     }
   }
 
-  private async scoreCalculator(data: AppConquistToCreate): Promise<number> {
+  async scoreCalculator(data: AppConquistToCreate): Promise<number> {
     const { userId, country, place } = data
 
     const user = await userService.getSingle(userId, {})
