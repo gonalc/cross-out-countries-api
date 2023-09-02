@@ -7,6 +7,7 @@ import GenericService, {
   type IFetchPagedOptions,
 } from './GenericService'
 import type { FindOptions } from 'sequelize'
+import { Request } from '../types/endpoints'
 
 class GenericController<IService extends InstanceType<typeof GenericService>> {
   service: IService
@@ -16,7 +17,7 @@ class GenericController<IService extends InstanceType<typeof GenericService>> {
   }
 
   fetchAll = async (
-    req: express.Request,
+    req: Request,
     res: express.Response,
     next: express.NextFunction
   ) => {
@@ -45,7 +46,7 @@ class GenericController<IService extends InstanceType<typeof GenericService>> {
   }
 
   fetchPaged = async (
-    req: express.Request,
+    req: Request,
     res: express.Response,
     next: express.NextFunction
   ) => {
@@ -77,7 +78,7 @@ class GenericController<IService extends InstanceType<typeof GenericService>> {
   }
 
   fetchSingle = async (
-    req: express.Request,
+    req: Request,
     res: express.Response,
     next: express.NextFunction
   ) => {
@@ -105,7 +106,7 @@ class GenericController<IService extends InstanceType<typeof GenericService>> {
   }
 
   create = async (
-    req: express.Request,
+    req: Request,
     res: express.Response,
     next: express.NextFunction
   ) => {
@@ -119,7 +120,7 @@ class GenericController<IService extends InstanceType<typeof GenericService>> {
   }
 
   createMany = async (
-    req: express.Request,
+    req: Request,
     res: express.Response,
     next: express.NextFunction
   ) => {
@@ -133,7 +134,7 @@ class GenericController<IService extends InstanceType<typeof GenericService>> {
   }
 
   update = async (
-    req: express.Request,
+    req: Request,
     res: express.Response,
     next: express.NextFunction
   ) => {
@@ -161,7 +162,7 @@ class GenericController<IService extends InstanceType<typeof GenericService>> {
   }
 
   destroy = async (
-    req: express.Request,
+    req: Request,
     res: express.Response,
     next: express.NextFunction
   ) => {

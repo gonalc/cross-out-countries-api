@@ -6,7 +6,7 @@ const service = new ConquistService()
 
 export const SCHEMA = Joi.object({
   id: Joi.number().integer(),
-  birthYear: Joi.number().integer(),
+  birthYear: Joi.number().integer().allow(null),
   country: Joi.string().max(128),
   province: Joi.string().max(128).allow(null),
   place: Joi.string().max(128),

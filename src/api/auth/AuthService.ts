@@ -6,7 +6,7 @@ import UserService, { userFieldsToOmit } from '../users/userService'
 import type { UserAttributes, UserCreationAttributes } from '../users/userTypes'
 import BadgeService from '../badges/badgeService'
 
-type TUserResponse = Omit<UserAttributes, 'salt' | 'password'>
+export type TUserResponse = Omit<UserAttributes, 'salt' | 'password'>
 
 export interface ILoginData {
   email: UserAttributes['email']

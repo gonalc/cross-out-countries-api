@@ -4,7 +4,7 @@ export type ConquistAttributes = {
   id: number
   country: string
   province: string
-  birthYear: number
+  birthYear?: number | null
   place: string
   userId: number
   score: number
@@ -14,5 +14,5 @@ export type ConquistAttributes = {
 
 export type ConquistCreationAttributes = Optional<
   ConquistAttributes,
-  'id' | 'createdAt' | 'updatedAt'
+  'id' | 'createdAt' | 'updatedAt' | 'birthYear'
 >
