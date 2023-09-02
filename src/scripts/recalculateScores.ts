@@ -52,7 +52,7 @@ export async function recalculateScores() {
     }
   } catch (error) {
     if (process.env.NODE_ENV === 'scripts') {
-      process.exit(0)
+      process.exit(1)
     }
   }
 }
