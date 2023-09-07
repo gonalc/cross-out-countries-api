@@ -23,11 +23,23 @@ if (
   if (process.env.NODE_ENV === 'test') {
     connection = {
       ...connection,
-      port: Number(process.env.TEST_DB_PORT),
+      port: Number(process.env.DB_PORT),
       host: process.env.TEST_DB_HOST,
       username: process.env.TEST_DB_USER,
       password: process.env.TEST_DB_PASSWORD,
       database: process.env.TEST_DB_NAME,
+    }
+  }
+
+  // When running scripts
+  if (process.env.NODE_ENV === 'scripts') {
+    connection = {
+      ...connection,
+      port: Number(process.env.DB_PORT),
+      host: process.env.SCRIPTS_DB_HOST,
+      username: process.env.SCRIPTS_DB_USER,
+      password: process.env.SCRIPTS_DB_PASSWORD,
+      database: process.env.SCRIPTS_DB_NAME,
     }
   }
 }

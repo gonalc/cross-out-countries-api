@@ -10,7 +10,7 @@ declare global {
       LOG_DIR?: string
       APP_NAME: string
       APP_VERSION: string
-      NODE_ENV?: 'test' | 'production' | 'development'
+      NODE_ENV?: 'test' | 'production' | 'development' | 'scripts'
       // DB fields
       DB_PORT: string
       DB_CLIENT: Dialect
@@ -23,6 +23,11 @@ declare global {
       TEST_DB_USER: string
       TEST_DB_PASSWORD: string
       TEST_DB_NAME: string
+      // Scripts DB fields
+      SCRIPTS_DB_HOST: string
+      SCRIPTS_DB_USER: string
+      SCRIPTS_DB_PASSWORD: string
+      SCRIPTS_DB_NAME: string
       // Auth
       SECRET_KEY: string
       ALGORITHM?: import('jsonwebtoken').Algorithm
