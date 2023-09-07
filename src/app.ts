@@ -15,7 +15,8 @@ import {
   methodNotAllowedError,
 } from './middlewares/errorHandling'
 import auth from './middlewares/auth'
-import { recalculateScores } from './scripts/recalculateScores'
+import './scripts/recalculateScores'
+import './scripts/generateCodeForUsers'
 
 const app = express()
 
@@ -39,8 +40,6 @@ app.use('/api', routes)
 
 app.use(genericErrorHandler)
 app.use(methodNotAllowedError)
-
-recalculateScores()
 
 process.on('unhandledRejection', (error) => {
   logger.error(`Unhandled rejection: ${String(error)}`)

@@ -15,6 +15,7 @@ import InvitationModel from '../invitations/invitationModel'
 import { sortBy } from 'lodash'
 import type { UserAttributes, UserCreationAttributes } from './userTypes'
 import BadgeModel from '../badges/badgeModel'
+import { type GenerateCodeInput, generateCode } from '../../utils/codeGenerator'
 
 const tableName = 'user'
 
@@ -31,6 +32,7 @@ class UserModel extends Model<UserAttributes, UserCreationAttributes> {
   declare score: number
   declare fcmToken: CreationOptional<string>
   declare referredUsers: CreationOptional<number>
+  declare referralCode: CreationOptional<string>
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
 
@@ -120,6 +122,9 @@ UserModel.init(
       type: DataTypes.INTEGER.UNSIGNED,
       defaultValue: 0,
     },
+    referralCode: {
+      type: DataTypes.STRING(12),
+    },
     score: {
       type: DataTypes.INTEGER.UNSIGNED,
       defaultValue: 0,
@@ -158,6 +163,15 @@ UserModel.init(
 
         user.salt = salt
         user.password = hashedPassword
+
+        const codePayload: GenerateCodeInput = {
+          username: user.username,
+          country: user.country,
+        }
+
+        const referralCode = generateCode(codePayload)
+
+        user.referralCode = referralCode
       },
     },
   }

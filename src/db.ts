@@ -2,12 +2,13 @@ import { Sequelize } from 'sequelize'
 import connection, { getDialect } from './dbConnection'
 import logger from './utils/logger'
 
-const { database = '', username = '', password = '', host } = connection
+const { database = '', username = '', password = '', host, port } = connection
 const dialect = getDialect()
 
 const sequelize = new Sequelize(database, username, password, {
   host,
   dialect,
+  port,
   logging: false,
 })
 
