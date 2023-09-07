@@ -2,14 +2,8 @@ import { Sequelize } from 'sequelize'
 import connection, { getDialect } from './dbConnection'
 import logger from './utils/logger'
 
-const { database = '', username = '', password = '', host } = connection
+const { database = '', username = '', password = '', host, port } = connection
 const dialect = getDialect()
-
-const DEFAULT_PORT = 3306
-const port =
-  connection.port && typeof connection.port === 'number'
-    ? connection.port
-    : DEFAULT_PORT
 
 const sequelize = new Sequelize(database, username, password, {
   host,
