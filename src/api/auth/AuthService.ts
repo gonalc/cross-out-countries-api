@@ -5,6 +5,7 @@ import { omit } from 'lodash'
 import UserService, { userFieldsToOmit } from '../users/userService'
 import type { UserAttributes, UserCreationAttributes } from '../users/userTypes'
 import BadgeService from '../badges/badgeService'
+import { Op } from 'sequelize'
 
 export type TUserResponse = Omit<UserAttributes, 'salt' | 'password'>
 
@@ -143,7 +144,9 @@ class AuthService implements IAuthService {
     if (referral) {
       try {
         const referred = await userService.getOneByField({
-          where: { username: referral },
+          where: {
+            [Op.or]: [{ username: referral }, { referralCode: referral }],
+          },
         })
 
         if (referred) {
