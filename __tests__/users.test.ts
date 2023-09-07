@@ -55,6 +55,7 @@ describe('Users API endpoints', () => {
     expect(statusCode).toBe(StatusCodes.CREATED)
     expect(body.data).toBeDefined()
     expect(body.data).toHaveProperty('id')
+    expect(body.data).toHaveProperty('referralCode')
 
     createdId = body.data.id
   })

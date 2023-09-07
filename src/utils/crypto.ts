@@ -6,8 +6,14 @@ const ITERATIONS = 1000
 const KEYLEN = 64
 const DIGEST = 'sha512'
 
+export function generateRandomString(size: number): string {
+  const randomString = crypto.randomBytes(size).toString(ENCODING)
+
+  return randomString
+}
+
 export function generateSalt(): string {
-  const salt = crypto.randomBytes(SALT_SIZE).toString(ENCODING)
+  const salt = generateRandomString(SALT_SIZE)
 
   return salt
 }
