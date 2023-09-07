@@ -16,6 +16,7 @@ import {
 } from './middlewares/errorHandling'
 import auth from './middlewares/auth'
 import './scripts/recalculateScores'
+import './scripts/generateCodeForUsers'
 
 const app = express()
 
