@@ -1,16 +1,14 @@
 import type { Optional } from 'sequelize'
+import type { GenericItem, GenericOptionalField } from '../../types/models'
 
-export type CountryAttributes = {
-  id: number
+export type CountryAttributes = GenericItem & {
   code: string
   latitude: number
   longitude: number
   population: number
-  createdAt: Date
-  updatedAt: Date
 }
 
 export type CountryCreationAttributes = Optional<
   CountryAttributes,
-  'id' | 'createdAt' | 'updatedAt'
+  GenericOptionalField
 >

@@ -15,8 +15,10 @@ import {
   methodNotAllowedError,
 } from './middlewares/errorHandling'
 import auth from './middlewares/auth'
+
 import './scripts/recalculateScores'
 import './scripts/generateCodeForUsers'
+import './scripts/checkBadges'
 
 const app = express()
 

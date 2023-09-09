@@ -12,12 +12,14 @@ import {
   NotificationType,
   sendMessages,
 } from '../../utils/notifications'
+import BadgeService from '../badges/badgeService'
 
 type AppConquistToCreate = Omit<CreationAttributes<ConquistModel>, 'score'>
 
 const userService = new UserService()
 const countryService = new CountryService()
 const leagueService = new LeagueService()
+const badgeService = new BadgeService()
 
 const MIN_SCORE = 2
 const MAX_DISTANCE = 20_000
@@ -43,6 +45,8 @@ class ConquistService extends GenericService<ConquistModel> {
       const created = await this.create(conquistToCreate)
 
       await userService.increaseScore(score, data.userId)
+
+      await badgeService.checkConquistBadges(data.userId)
 
       // Send notifications to everyone who share League with the conquerer
       await this.sendNotifications(data.userId, data.country)

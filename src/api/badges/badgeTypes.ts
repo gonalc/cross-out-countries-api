@@ -1,16 +1,14 @@
 import type { Optional } from 'sequelize'
+import type { GenericItem, GenericOptionalField } from '../../types/models'
 
-export type BadgeAttributes = {
-  id: number
+export type BadgeAttributes = GenericItem & {
   name: string
   iconKey: string
   iconFamily: string
   color: string
-  createdAt: Date
-  updatedAt: Date
+  group: string | null
 }
-
 export type BadgeCreationAttributes = Optional<
   BadgeAttributes,
-  'id' | 'createdAt' | 'updatedAt' | 'color'
+  GenericOptionalField | 'color' | 'group'
 >

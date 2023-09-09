@@ -1,18 +1,16 @@
 import type { Optional } from 'sequelize'
+import type { GenericItem, GenericOptionalField } from '../../types/models'
 
-export type ConquistAttributes = {
-  id: number
+export type ConquistAttributes = GenericItem & {
   country: string
   province: string
   birthYear?: number | null
   place: string
   userId: number
   score: number
-  createdAt: Date
-  updatedAt: Date
 }
 
 export type ConquistCreationAttributes = Optional<
   ConquistAttributes,
-  'id' | 'createdAt' | 'updatedAt' | 'birthYear'
+  GenericOptionalField | 'birthYear'
 >
