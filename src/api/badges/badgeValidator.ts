@@ -10,6 +10,7 @@ export const SCHEMA = Joi.object({
   iconKey: Joi.string().max(128),
   iconFamily: Joi.string().max(128),
   color: Joi.string().max(128).allow(null),
+  group: Joi.string().max(32).allow(null),
   createdAt: Joi.date(),
   updatedAt: Joi.date(),
 })

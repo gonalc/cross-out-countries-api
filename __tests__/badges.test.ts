@@ -16,6 +16,7 @@ const newItem: BadgeCreationAttributes = {
   name: 'Test Badge',
   iconKey: 'test-icon',
   iconFamily: 'TestIcons',
+  group: 'test',
 }
 
 const UPDATED_FIELD: keyof BadgeAttributes = 'name'
