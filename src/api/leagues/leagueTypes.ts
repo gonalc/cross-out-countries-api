@@ -1,6 +1,7 @@
 import type { Optional } from 'sequelize'
+import type { GenericItem, GenericOptionalField } from '../../types/models'
 
-export type LeagueAttributes = {
+export type LeagueAttributes = GenericItem & {
   id: number
   name: string
   createdAt: Date
@@ -9,5 +10,5 @@ export type LeagueAttributes = {
 
 export type LeagueCreationAttributes = Optional<
   LeagueAttributes,
-  'id' | 'createdAt' | 'updatedAt'
+  GenericOptionalField
 >

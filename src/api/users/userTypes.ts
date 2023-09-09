@@ -1,7 +1,7 @@
 import type { Optional } from 'sequelize'
+import type { GenericItem, GenericOptionalField } from '../../types/models'
 
-export type UserAttributes = {
-  id: number
+export type UserAttributes = GenericItem & {
   name: string
   username: string
   birthdate: Date
@@ -14,8 +14,6 @@ export type UserAttributes = {
   fcmToken: string
   referredUsers: number
   referralCode: string
-  createdAt: Date
-  updatedAt: Date
 
   // Virtual
   countries?: string[]
@@ -24,9 +22,7 @@ export type UserAttributes = {
 
 export type UserCreationAttributes = Optional<
   UserAttributes,
-  | 'id'
-  | 'createdAt'
-  | 'updatedAt'
+  | GenericOptionalField
   | 'countries'
   | 'places'
   | 'salt'
