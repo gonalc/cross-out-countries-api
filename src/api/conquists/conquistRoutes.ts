@@ -13,6 +13,6 @@ router.post('/', validator, controller.createConquist)
 
 router.put('/:id', find, validator, controller.update)
 
-router.delete('/:id', find, controller.destroy)
+router.delete('/:id', find, controller.deleteConquist)
 
 export default router
