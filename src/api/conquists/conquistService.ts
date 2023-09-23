@@ -230,7 +230,9 @@ class ConquistService extends GenericService<ConquistModel> {
       return MIN_SCORE
     }
 
-    return (1 / population) * 100
+    const result = (1 / population) * 10_000_000
+
+    return result
   }
 
   private getFinalScore(scores: number[]): number {
