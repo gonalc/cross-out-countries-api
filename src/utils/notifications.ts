@@ -4,6 +4,7 @@ import logger from './logger'
 export enum NotificationType {
   INVITATION = 'invitation',
   CONQUIST = 'conquist',
+  GENERIC = 'generic',
 }
 
 export type BuildMessagePayload = {
@@ -13,6 +14,8 @@ export type BuildMessagePayload = {
   title: string
   type: NotificationType
 }
+
+export type BaseMessage = Omit<BuildMessagePayload, 'token'>
 
 const expo = new Expo()
 

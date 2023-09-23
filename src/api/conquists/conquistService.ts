@@ -8,11 +8,13 @@ import CountryService from '../countries/countryService'
 import LeagueService from '../leagues/leagueService'
 import LeagueModel from '../leagues/leagueModel'
 import {
-  BuildMessagePayload,
+  type BaseMessage,
+  type BuildMessagePayload,
   NotificationType,
   sendMessages,
 } from '../../utils/notifications'
 import BadgeService from '../badges/badgeService'
+import { ConquistAttributes } from './conquistTypes'
 
 type AppConquistToCreate = Omit<CreationAttributes<ConquistModel>, 'score'>
 
@@ -57,6 +59,32 @@ class ConquistService extends GenericService<ConquistModel> {
     }
   }
 
+  async deleteConquist(id: ConquistAttributes['id']) {
+    const conquistToDelete = await this.getSingle(id, {
+      attributes: ['id', 'score', 'userId'],
+    })
+
+    if (!conquistToDelete) {
+      throw Boom.notFound('Conquist not found')
+    }
+
+    const { userId, score } = conquistToDelete
+
+    const user = await userService.getSingle(userId, {
+      attributes: ['id', 'score'],
+    })
+
+    if (!user) {
+      throw Boom.notFound('User to decrement score not found')
+    }
+
+    await user.decrement('score', { by: score })
+
+    const deletedConquist = await this.destroy(id)
+
+    return deletedConquist
+  }
+
   private async sendNotifications(userId: number, country: string) {
     try {
       const recipients = await this.getNotificationRecipients(userId)
@@ -65,7 +93,7 @@ class ConquistService extends GenericService<ConquistModel> {
         attributes: ['name'],
       })
 
-      const baseMessage: Omit<BuildMessagePayload, 'token'> = {
+      const baseMessage: BaseMessage = {
         title: '¡Nueva conquista!',
         text: `${conquererUser?.get('name')} ha conquistado ${country}`,
         type: NotificationType.CONQUIST,
@@ -203,7 +231,9 @@ class ConquistService extends GenericService<ConquistModel> {
       return MIN_SCORE
     }
 
-    return (1 / population) * 100
+    const result = (1 / population) * 5_000_000
+
+    return result
   }
 
   private getFinalScore(scores: number[]): number {
