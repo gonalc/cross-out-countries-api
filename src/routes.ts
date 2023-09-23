@@ -8,6 +8,7 @@ import conquistRoutes from './api/conquists/conquistRoutes'
 import invitationsRoutes from './api/invitations/invitationRoutes'
 import countryRoutes from './api/countries/countryRoutes'
 import badgeRoutes from './api/badges/badgeRoutes'
+import notificationsRoutes from './api/notifications/notificationsRoutes'
 
 const router = Router()
 
@@ -29,5 +30,6 @@ router.use('/players', leagueUserRoutes)
 router.use('/conquists', conquistRoutes)
 router.use('/badge-users', badgeUserRoutes)
 router.use('/invitations', invitationsRoutes)
+router.use('/notifications', notificationsRoutes)
 
 export default router

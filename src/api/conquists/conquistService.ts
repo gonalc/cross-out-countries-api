@@ -8,7 +8,8 @@ import CountryService from '../countries/countryService'
 import LeagueService from '../leagues/leagueService'
 import LeagueModel from '../leagues/leagueModel'
 import {
-  BuildMessagePayload,
+  type BaseMessage,
+  type BuildMessagePayload,
   NotificationType,
   sendMessages,
 } from '../../utils/notifications'
@@ -92,7 +93,7 @@ class ConquistService extends GenericService<ConquistModel> {
         attributes: ['name'],
       })
 
-      const baseMessage: Omit<BuildMessagePayload, 'token'> = {
+      const baseMessage: BaseMessage = {
         title: '¡Nueva conquista!',
         text: `${conquererUser?.get('name')} ha conquistado ${country}`,
         type: NotificationType.CONQUIST,
