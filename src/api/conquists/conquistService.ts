@@ -231,7 +231,7 @@ class ConquistService extends GenericService<ConquistModel> {
       return MIN_SCORE
     }
 
-    const result = (1 / population) * 10_000_000
+    const result = (1 / population) * 5_000_000
 
     return result
   }
