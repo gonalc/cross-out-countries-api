@@ -13,6 +13,7 @@ import {
   sendMessages,
 } from '../../utils/notifications'
 import BadgeService from '../badges/badgeService'
+import { ConquistAttributes } from './conquistTypes'
 
 type AppConquistToCreate = Omit<CreationAttributes<ConquistModel>, 'score'>
 
@@ -55,6 +56,32 @@ class ConquistService extends GenericService<ConquistModel> {
     } catch (error) {
       throw Boom.badRequest(String(error))
     }
+  }
+
+  async deleteConquist(id: ConquistAttributes['id']) {
+    const conquistToDelete = await this.getSingle(id, {
+      attributes: ['id', 'score', 'userId'],
+    })
+
+    if (!conquistToDelete) {
+      throw Boom.notFound('Conquist not found')
+    }
+
+    const { userId, score } = conquistToDelete
+
+    const user = await userService.getSingle(userId, {
+      attributes: ['id', 'score'],
+    })
+
+    if (!user) {
+      throw Boom.notFound('User to decrement score not found')
+    }
+
+    await user.decrement('score', { by: score })
+
+    const deletedConquist = await this.destroy(id)
+
+    return deletedConquist
   }
 
   private async sendNotifications(userId: number, country: string) {

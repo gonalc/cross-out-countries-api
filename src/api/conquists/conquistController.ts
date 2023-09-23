@@ -23,6 +23,22 @@ class ConquistController extends GenericController<ConquistService> {
       return next(error)
     }
   }
+
+  deleteConquist = async (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    try {
+      const id = parseInt(req.params.id)
+
+      const data = await this.service.deleteConquist(id)
+
+      return res.status(StatusCodes.OK).json({ data })
+    } catch (error) {
+      return next(error)
+    }
+  }
 }
 
 export default ConquistController
